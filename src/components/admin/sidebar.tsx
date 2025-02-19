@@ -1,94 +1,85 @@
 "use client";
 
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { BoxesIcon, BoxIcon, LayoutDashboardIcon, LogOutIcon, ShoppingCartIcon, TicketPercentIcon, UsersIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Card } from "../ui/card";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {
+  LayoutDashboardIcon,
+  ShoppingCartIcon,
+  TicketPercentIcon,
+  BoxesIcon,
+  ListIcon,
+  UsersIcon,
 
-export default function Sidebar({ sidebarOpen, toggleSidebar }: { sidebarOpen: boolean; toggleSidebar: () => void }) {
-    const router = useRouter();
+  Bell,
+  Bookmark,
+  Home,
+  List,
+  Mail,
+  MoreHorizontal,
+  User,
+  Users,
+} from "lucide-react";
 
-    const handleLogout = () => {
-        localStorage.removeItem("jwt");
-        router.push("/admin/login");
-    };
+import { SidebarDesktop } from "./sidebar-desktop";
+import { SidebarItems } from "../../../types";
+import { SidebarButton } from "./sidebar-button";
+import { useMediaQuery } from "usehooks-ts";
+import { SidebarMobile } from "./sidebar-mobile";
 
-    return (
-        <>
-            {/* Mobile Sidebar using Sheet */}
-            <Sheet open={sidebarOpen} onOpenChange={toggleSidebar}>
-                <SheetContent side="left" className="w-64 bg-card p-4 space-y-4">
-                    <SidebarContent handleLogout={handleLogout} />
-                </SheetContent>
-            </Sheet>
+const sidebarItems: SidebarItems = {
+  links: [
+    {
+        label: "Dashboard",
+        href: "/admin",
+        icon: LayoutDashboardIcon
+    },
+    {
+        label: "FOFS Order",
+        href: "/admin/FOFS/order",
+        icon: ShoppingCartIcon
+    },
+    {
+        label: "Raffle Order",
+        href: "/admin/raffle/order",
+        icon: TicketPercentIcon
+    },
+    {
+        label: "Item Stock",
+        href: "/admin/FOFS/stock",
+        icon: BoxesIcon
+    },
+    {
+        label: "Raffle List",
+        href: "/admin/raffle/list",
+        icon: ListIcon
+    },
+    {
+        label: "Admin Settings",
+        href: "/admin/settings",
+        icon: UsersIcon
+    },
+  ],
+//   extras: (
+//     <div className="flex flex-col gap-2">
+//       <SidebarButton icon={MoreHorizontal} className="w-full">
+//         More
+//       </SidebarButton>
+//       <SidebarButton
+//         className="w-full justify-center text-white"
+//         variant="default"
+//       >
+//         Tweet
+//       </SidebarButton>
+//     </div>
+//   ),
+};
 
-            {/* Desktop Sidebar (Always Visible) */}
-            <aside className={cn("hidden sm:block bg-card w-64 p-4 space-y-4 h-screen shadow")}>
-                <SidebarContent handleLogout={handleLogout} />
-            </aside>
-        </>
-    );
-}
+export default function Sidebar() {
+  const isDesktop = useMediaQuery("(min-width: 640px)", {
+    initializeWithValue: false,
+  });
 
-function SidebarContent({ handleLogout }: { handleLogout: () => void }) {
-    return (
-        <>
-            <h2 className="text-xl font-bold text-primary">Chonky Cat</h2>
+  if (isDesktop) {
+    return <SidebarDesktop sidebarItems={sidebarItems} />;
+  }
 
-            <Card>
-                <Link href="/admin">
-                    <Button variant="ghost" className="w-full justify-start flex items-center">
-                        <LayoutDashboardIcon className="mr-2" />
-                        Dashboard
-                    </Button>
-                </Link>        
-            </Card>
-
-            <Card>
-                <Link href="/admin/FOFS/order">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <ShoppingCartIcon className="mr-2" />
-                        FOFS Order
-                    </Button>
-                </Link>
-                <Link href="/admin/raffle/order">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <TicketPercentIcon className="mr-2" />
-                        Raffle Order
-                    </Button>
-                </Link>    
-            </Card>
-
-            <Card>
-                <Link href="/admin/FOFS/stock">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <BoxIcon className="mr-2" />
-                        FOFS Stock
-                    </Button>
-                </Link>
-                <Link href="/admin/raffle/list">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <BoxesIcon className="mr-2" />
-                        Raffle List
-                    </Button>
-                </Link>    
-            </Card>
-
-            <Card>
-                <Link href="/admin/settings">
-                    <Button variant="ghost" className="w-full justify-start">
-                        <UsersIcon className="mr-2" />
-                        Admin Setting
-                    </Button>
-                </Link>
-                <Button variant="ghost" className="w-full justify-start text-red-500" onClick={handleLogout}>
-                    <LogOutIcon className="mr-2" />
-                    Logout
-                </Button>
-            </Card>
-        </>
-    );
+  return <SidebarMobile sidebarItems={sidebarItems} />;
 }
