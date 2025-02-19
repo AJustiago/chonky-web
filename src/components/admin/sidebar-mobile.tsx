@@ -10,7 +10,7 @@ import {
   SheetTitle,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
-import { LogOut, Menu, MoreHorizontal, Settings, X } from "lucide-react";
+import { LogOut, Menu, MoreHorizontal, PanelRightCloseIcon, PanelRightOpen, Settings, X } from "lucide-react";
 import Link from "next/link";
 import { SidebarButtonSheet as SidebarButton } from "./sidebar-button";
 import { usePathname } from "next/navigation";
@@ -37,7 +37,7 @@ export function SidebarMobile(props: SidebarMobileProps) {
       <SheetTitle></SheetTitle>
       <SheetTrigger asChild>
         <Button size="icon" variant="ghost" className="fixed top-3 left-3">
-          <Menu size={20} />
+          <PanelRightCloseIcon size={20} />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="px-3 py-4">
@@ -45,11 +45,6 @@ export function SidebarMobile(props: SidebarMobileProps) {
           <span className="text-lg font-semibold text-foreground mx-3">
             Chonky Web
           </span>
-          <SheetClose asChild>
-            <Button className="h-7 w-7 p-0" variant="ghost">
-              <X size={15} />
-            </Button>
-          </SheetClose>
         </SheetHeader>
         <div className="h-full">
           <div className="mt-5 flex flex-col w-full gap-1">
