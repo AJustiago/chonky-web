@@ -1,23 +1,22 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Menu, PanelRightClose, X } from "lucide-react";
+import { useState } from "react";
+import { PanelRightOpen, PanelRightClose } from "lucide-react";
+import { useMediaQuery } from "usehooks-ts";
 
-export default function Header({ sidebarOpen, toggleSidebar }: { sidebarOpen: boolean; toggleSidebar: () => void }) {
+export default function Header({ toggleSidebar, isSidebarOpen }: { toggleSidebar: () => void; isSidebarOpen: boolean }) {
+  const isDesktop = useMediaQuery("(min-width: 640px)", {
+    initializeWithValue: false,
+  });
+
+  if (!isDesktop) return null;
+
   return (
-    <header className="bg-card p-4 flex justify-between items-center shadow">
-    <Button
-        variant="outline"
-        size="icon"
-        className="sm:hidden"
-        onClick={toggleSidebar}
-    >
-        {sidebarOpen ? <X /> : <PanelRightClose />}
-    </Button>
-      <h1 className="text-xl font-bold text-primary">Chonky Web</h1>
-      <div className="flex items-center gap-4">
-        <p className="text-lg font-semibold">Username</p>
-      </div>
+    <header className="w-full bg-card p-4 flex justify-between items-center border">
+      <button onClick={toggleSidebar} className="p-2 rounded">
+        {isSidebarOpen ? <PanelRightOpen className="w-6 h-6" /> : <PanelRightClose className="w-6 h-6" />}
+      </button>
+      <h1 className="text-lg font-semibold">Chonky Web</h1>
     </header>
   );
 }

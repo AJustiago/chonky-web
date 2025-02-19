@@ -52,9 +52,9 @@ export function SidebarDesktop(props: SidebarDesktopProps) {
                     <div className="flex gap-2">
                       <Avatar className="h-5 w-5">
                         <AvatarImage src="" />
-                        <AvatarFallback>Max Programming</AvatarFallback>
+                        <AvatarFallback>Dummy</AvatarFallback>
                       </Avatar>
-                      <span>Max Programming</span>
+                      <span>Dummy</span>
                     </div>
                     <MoreHorizontal size={20} />
                   </div>
