@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
+import { PackagePlusIcon } from "lucide-react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -56,22 +56,25 @@ export function DataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 5, // Default to 5 rows per page
+        pageSize: 5, 
       },
     },
   })
 
   return (
     <div>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter Product"
-          value={(table.getColumn("productName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("productName")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="flex items-center justify-between py-4">
+        <div>
+          <Input
+            placeholder="Filter Product"
+            value={(table.getColumn("productName")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("productName")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        </div>
+        <Button variant="outline"><PackagePlusIcon />Add New Product</Button>
       </div>
       <div className="flex items-center space-x-2 my-4">
         <span className="text-sm">Rows per page:</span>
@@ -137,7 +140,6 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/* Pagination Controls */}
       <div className="flex items-center justify-between space-x-4 py-4">
         <div className="flex items-center space-x-2">
           <span className="text-sm">

@@ -7,10 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Upload, XCircle } from "lucide-react";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { Separator } from "@/components/ui/separator";
 
 interface ProductData {
   id: string;
   productName: string;
+  productDetail: string;
   photo: string;
   price: number;
   qty: number;
@@ -24,6 +27,7 @@ interface EditDialogProps {
 
 const EditDialog: React.FC<EditDialogProps> = ({ isOpen, onClose, data }) => {
   const [productName, setProductName] = useState(data.productName);
+  const [productDetail, setProductDetail] = useState(data.productDetail);
   const [photo, setPhoto] = useState(data.photo);
   const [price, setPrice] = useState(String(data.price));
   const [qty, setQty] = useState(String(data.qty));
@@ -57,23 +61,25 @@ const EditDialog: React.FC<EditDialogProps> = ({ isOpen, onClose, data }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-fit">
+      <DialogContent className="w-[50rem]">
         <DialogHeader>
-          <DialogTitle>Product Detail: {data.id}</DialogTitle>
+          <DialogTitle>Product Edit</DialogTitle>
+          <DialogDescription>Edit the Box for Changing the Product Detail</DialogDescription>
         </DialogHeader>
-
+        <Separator />
         <div className="flex gap-6">
           <div className="m-4 w-auto">
             <ProductCard
               productName={productName}
+              productDetail={productDetail}
               photo={photo}
               price={Number(price)}
               qty={Number(qty)}
               functionEnabled={false}
             />
           </div>
-
-          <div className="m-4 space-y-4">
+          <Separator orientation="vertical" />
+          <div className="m-4 space-y-4 w-full">
             <div className="space-y-2">
               <Label htmlFor="productName">Product Name</Label>
               <Input
@@ -84,12 +90,22 @@ const EditDialog: React.FC<EditDialogProps> = ({ isOpen, onClose, data }) => {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="productDetail">Product Detail</Label>
+              <Input
+                id="productDetail"
+                value={productDetail}
+                onChange={(e) => setProductDetail(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="price">Product Price</Label>
               <Input
                 id="price"
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
+                className=""
               />
             </div>
 

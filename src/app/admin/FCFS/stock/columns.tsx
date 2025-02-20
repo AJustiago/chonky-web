@@ -10,6 +10,7 @@ import EditDialog from "./dialog-stock";
 export type Data = {
   id: string;
   productName: string;
+  productDetail: string;
   photo: string;
   price: number;
   qty: number;
@@ -46,6 +47,18 @@ export const columns: ColumnDef<Data>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Product Name
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </div>
+    ),
+  },
+  {
+    accessorKey: "productDetail",
+    header: ({ column }) => (
+      <div
+        className="cursor-pointer flex items-center"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Product Detail
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </div>
     ),

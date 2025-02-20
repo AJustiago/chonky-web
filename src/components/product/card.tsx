@@ -8,13 +8,14 @@ import { Plus, Minus, ShoppingCart } from "lucide-react"
 
 interface ProductCardProps {
   productName: string
+  productDetail: string
   photo: string
   price: number
   qty: number
   functionEnabled: boolean
 }
 
-export function ProductCard({ productName, photo, price, qty, functionEnabled }: ProductCardProps) {
+export function ProductCard({ productName, productDetail, photo, price, qty, functionEnabled }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1)
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
@@ -42,8 +43,15 @@ export function ProductCard({ productName, photo, price, qty, functionEnabled }:
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <div>
-            <h3 className="font-semibold text-lg">{productName}</h3>
-            <span className="text-xl font-bold">{formattedPrice}</span>
+            <div>
+              <h3 className="font-semibold text-lg">{productName}</h3>
+            </div>
+            <div className="mb-4">
+              <span className="text-l">{productDetail}</span>
+            </div>
+            <div>
+              <span className="text-xl font-bold">{formattedPrice}</span>
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Button
