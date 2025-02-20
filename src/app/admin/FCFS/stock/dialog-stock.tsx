@@ -9,20 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Upload, XCircle } from "lucide-react";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { Separator } from "@/components/ui/separator";
-
-interface ProductData {
-  id: string;
-  productName: string;
-  productDetail: string;
-  photo: string;
-  price: number;
-  qty: number;
-}
+import { productSchema, Product } from "@/schemas/product.schema";
 
 interface EditDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  data: ProductData;
+  data: Product;
 }
 
 const EditDialog: React.FC<EditDialogProps> = ({ isOpen, onClose, data }) => {

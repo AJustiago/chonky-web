@@ -1,57 +1,50 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Plus, Minus, ShoppingCart } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Plus, Minus, ShoppingCart } from "lucide-react";
+import { productSchema, Product } from "@/schemas/product.schema";
 
-interface ProductCardProps {
-  productName: string
-  productDetail: string
-  photo: string
-  price: number
-  qty: number
-  functionEnabled: boolean
-}
+type ProductCardProps = Product;
 
-export function ProductCard({ productName, productDetail, photo, price, qty, functionEnabled }: ProductCardProps) {
-  const [quantity, setQuantity] = useState(1)
+export function ProductCard(props: ProductCardProps) {
+
+  const parsedProps = productSchema.safeParse(props);
+
+  if (!parsedProps.success) {
+    console.error("Invalid product data:", parsedProps.error.format());
+    return <div className="text-red-500">Invalid product data</div>;
+  }
+
+  const { productName, productDetail, photo, price, qty, functionEnabled } = parsedProps.data;
+  const [quantity, setQuantity] = useState(1);
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
-  }).format(price)
+  }).format(price);
 
   const handleIncrement = () => {
-    if (quantity < qty) {
-      setQuantity(quantity + 1)
-    }
-  }
+    if (quantity < qty) setQuantity(quantity + 1);
+  };
 
   const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1)
-    }
-  }
+    if (quantity > 1) setQuantity(quantity - 1);
+  };
 
   return (
-    <Card className="w-auto max-w-sm overflow-hidden p-4">
-      <div className="relative w-auto">
+    <Card className="w-[400px] h-[450px] overflow-hidden p-4">
+      <div className="relative w-full h-48">
         <img src={photo || "/placeholder.svg"} alt={productName} className="w-full h-48 object-cover" />
       </div>
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <div>
-            <div>
-              <h3 className="font-semibold text-lg">{productName}</h3>
-            </div>
-            <div className="mb-4">
-              <span className="text-l">{productDetail}</span>
-            </div>
-            <div>
-              <span className="text-xl font-bold">{formattedPrice}</span>
-            </div>
+            <h3 className="font-semibold text-lg">{productName}</h3>
+            <span className="text-l block mb-4">{productDetail}</span>
+            <span className="text-xl font-bold">{formattedPrice}</span>
           </div>
           <div className="flex items-center space-x-2">
             <Button
@@ -65,7 +58,7 @@ export function ProductCard({ productName, productDetail, photo, price, qty, fun
             <Input
               type="number"
               value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, Math.min(qty, Number.parseInt(e.target.value) || 1)))}
+              onChange={(e) => setQuantity(Math.max(1, Math.min(qty, Number(e.target.value) || 1)))}
               className="w-16 text-center"
               disabled={!functionEnabled}
             />
@@ -90,5 +83,5 @@ export function ProductCard({ productName, productDetail, photo, price, qty, fun
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

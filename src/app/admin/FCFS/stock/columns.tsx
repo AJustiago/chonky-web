@@ -6,17 +6,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import EditDialog from "./dialog-stock";
+import { productSchema, Product } from "@/schemas/product.schema";
 
-export type Data = {
-  id: string;
-  productName: string;
-  productDetail: string;
-  photo: string;
-  price: number;
-  qty: number;
-};
 
-export const columns: ColumnDef<Data>[] = [
+
+export const columns: ColumnDef<Product>[] = [
   {
     id: "select",
     header: ({ table }) => (

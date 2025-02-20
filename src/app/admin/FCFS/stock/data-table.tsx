@@ -22,25 +22,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { PackagePlusIcon } from "lucide-react"
+import { PackagePlusIcon, Trash2Icon } from "lucide-react"
+import { productSchema, Product } from "@/schemas/product.schema";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+interface DataTableProps {
+  columns: ColumnDef<Product, any>[]
+  data: Product[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [rowSelection, setRowSelection] = React.useState({})
+}: DataTableProps) {
+  const [tableData, setTableData] = React.useState(data);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -61,10 +61,18 @@ export function DataTable<TData, TValue>({
     },
   })
 
+  const handleDeleteSelected = () => {
+    const selectedRowIds = table.getSelectedRowModel().rows.map((row) => row.original.id);
+    const newData = tableData.filter((item) => !selectedRowIds.includes(item.id));
+    setTableData(newData);
+    setRowSelection({});
+  };
+
+
   return (
     <div>
       <div className="flex items-center justify-between py-4">
-        <div>
+        <div className="flex items-center">
           <Input
             placeholder="Filter Product"
             value={(table.getColumn("productName")?.getFilterValue() as string) ?? ""}
@@ -73,6 +81,16 @@ export function DataTable<TData, TValue>({
             }
             className="max-w-sm"
           />
+          <div className="cursor-pointer ml-2">
+            <Button
+              variant="destructive"
+              onClick={handleDeleteSelected}
+              disabled={table.getSelectedRowModel().rows.length === 0}
+            >
+              <Trash2Icon className="mr-2" />
+              Delete All Selected
+            </Button>
+          </div>
         </div>
         <Button variant="outline"><PackagePlusIcon />Add New Product</Button>
       </div>
