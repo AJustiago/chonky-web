@@ -3,14 +3,13 @@
 import { SidebarItems } from "../../../types";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTrigger,
   SheetTitle,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
-import { LogOut, Menu, MoreHorizontal, PanelRightCloseIcon, PanelRightOpen, Settings, X } from "lucide-react";
+import { LogOut, MoreHorizontal, PanelRightCloseIcon, Settings} from "lucide-react";
 import Link from "next/link";
 import { SidebarButtonSheet as SidebarButton } from "./sidebar-button";
 import { usePathname } from "next/navigation";
@@ -69,7 +68,7 @@ export function SidebarMobile(props: SidebarMobileProps) {
                   <div className="flex justify-between items-center w-full">
                     <div className="flex gap-2">
                       <Avatar className="h-5 w-5">
-                        <AvatarImage src="" />
+                        <AvatarImage src="/profile-default.svg" />
                         <AvatarFallback>Dummy</AvatarFallback>
                       </Avatar>
                       <span>Dummy</span>

@@ -51,7 +51,7 @@ export function SidebarDesktop(props: SidebarDesktopProps) {
                   <div className="flex justify-between items-center w-full">
                     <div className="flex gap-2">
                       <Avatar className="h-5 w-5">
-                        <AvatarImage src="" />
+                        <AvatarImage src="/profile-default.svg" />
                         <AvatarFallback>Dummy</AvatarFallback>
                       </Avatar>
                       <span>Dummy</span>

@@ -7,20 +7,10 @@ import {
   BoxesIcon,
   ListIcon,
   UsersIcon,
-
-  Bell,
-  Bookmark,
-  Home,
-  List,
-  Mail,
-  MoreHorizontal,
-  User,
-  Users,
 } from "lucide-react";
 
 import { SidebarDesktop } from "./sidebar-desktop";
 import { SidebarItems } from "../../../types";
-import { SidebarButton } from "./sidebar-button";
 import { useMediaQuery } from "usehooks-ts";
 import { SidebarMobile } from "./sidebar-mobile";
 
@@ -32,8 +22,8 @@ const sidebarItems: SidebarItems = {
         icon: LayoutDashboardIcon
     },
     {
-        label: "FOFS Order",
-        href: "/admin/FOFS/order",
+        label: "FCFS Order",
+        href: "/admin/FCFS/order",
         icon: ShoppingCartIcon
     },
     {
@@ -43,7 +33,7 @@ const sidebarItems: SidebarItems = {
     },
     {
         label: "Item Stock",
-        href: "/admin/FOFS/stock",
+        href: "/admin/FCFS/stock",
         icon: BoxesIcon
     },
     {
@@ -57,19 +47,6 @@ const sidebarItems: SidebarItems = {
         icon: UsersIcon
     },
   ],
-//   extras: (
-//     <div className="flex flex-col gap-2">
-//       <SidebarButton icon={MoreHorizontal} className="w-full">
-//         More
-//       </SidebarButton>
-//       <SidebarButton
-//         className="w-full justify-center text-white"
-//         variant="default"
-//       >
-//         Tweet
-//       </SidebarButton>
-//     </div>
-//   ),
 };
 
 export default function Sidebar() {

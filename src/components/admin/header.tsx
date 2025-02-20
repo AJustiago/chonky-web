@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { PanelRightOpen, PanelRightClose } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 
