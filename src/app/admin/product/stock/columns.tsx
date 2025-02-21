@@ -2,37 +2,37 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import EditDialog from "./dialog-stock";
-import { productSchema, Product } from "@/schemas/product.schema";
-
-
+import { Product } from "@/schemas/product.schema";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import DialogDelete from "@/components/global/dialog-delete";
 
 export const columns: ColumnDef<Product>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-      checked={
-        table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //     checked={
+  //       table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //       />
+  //     ),
+  //     cell: ({ row }) => (
+  //       <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "productName",
     header: ({ column }) => (
@@ -112,31 +112,62 @@ export const columns: ColumnDef<Product>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const data = row.original;
-      const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+      const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+      const [deleteId, setDeleteId] = useState<string | "">("");
+
+      const handleDelete = (id: string) => {
+        setDeleteId(id);
+        setIsDeleteOpen(true);
+      };
+
+      const confirmDelete = () => {
+        console.log(deleteId)
+        if (deleteId !== null) {
+          console.log("Deleted item with ID:", deleteId);
+          toast("Delete Success", {
+            description: "Product Data Has Been Deleted",
+          })
+          setIsDeleteOpen(false);
+        }
+      };
+
+      const router = useRouter();
       return (
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="icon"
-            onClick={() => setIsDialogOpen(true)}
+            onClick={() => {
+              const queryParams = new URLSearchParams({
+                productName: data.productName,
+                productDetail: data.productDetail || '',
+                productDesc: data.productDesc || '',
+                photo: data.photo,
+                price: String(data.price),
+                qty: String(data.qty),
+              }).toString();
+
+              router.push(`/admin/product/stock/${data.id}?${queryParams}`);
+            }}
           >
             <Pencil className="h-4 w-4" />
           </Button>
-    
-          {isDialogOpen && (
-            <EditDialog
-              isOpen={isDialogOpen}
-              onClose={() => setIsDialogOpen(false)}
-              data={data}
-            />
-          )}
+
+
           <Button
             variant="outline"
             size="icon"
-            onClick={() => console.log("Delete:", data.id)}
+            onClick={() => handleDelete(data.id!)}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
+
+          <DialogDelete
+            isOpen={isDeleteOpen}
+            onClose={() => setIsDeleteOpen(false)}
+            onConfirm={confirmDelete}
+          />
         </div>
       );
     },

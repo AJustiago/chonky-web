@@ -22,8 +22,8 @@ const sidebarItems: SidebarItems = {
         icon: LayoutDashboardIcon
     },
     {
-        label: "FCFS Order",
-        href: "/admin/FCFS/order",
+        label: "Product Order",
+        href: "/admin/product/order",
         icon: ShoppingCartIcon
     },
     {
@@ -32,8 +32,8 @@ const sidebarItems: SidebarItems = {
         icon: TicketPercentIcon
     },
     {
-        label: "Item Stock",
-        href: "/admin/FCFS/stock",
+        label: "Product Stock",
+        href: "/admin/product/stock",
         icon: BoxesIcon
     },
     {

@@ -1,7 +1,7 @@
 import AdminLayout from '@/components/admin/adminLayout';
 import React from 'react';
 
-const FCFSOrderPage = () => {
+const ProductOrderPage = () => {
   return (
     <AdminLayout>
       <div>
@@ -11,4 +11,4 @@ const FCFSOrderPage = () => {
   );
 };
 
-export default FCFSOrderPage;
+export default ProductOrderPage;
