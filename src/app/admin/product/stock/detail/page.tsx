@@ -14,13 +14,22 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Eye, X, Check } from "lucide-react";
 import DialogPreview from "./dialog-product";
+import MyBreadcrumbs from "@/components/admin/breadcrumbs";
+
+import { EmblaOptionsType } from "embla-carousel";
+import EmblaCarousel from "@/components/global/carousel/embla-carousel";
+import '@/styles/embla.css'
 
 export default function DetailProductPage() {
+  const OPTIONS: EmblaOptionsType = {}
+  const SLIDE_COUNT = 5
+  const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
+
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
 
-  const id = params?.id as string;
+  const id = params?.id as string || searchParams.get("id");
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +45,7 @@ export default function DetailProductPage() {
     resolver: zodResolver(productSchema),
     defaultValues: {
       productName: "",
-      productDetail: "",
+      productColorway: [],
       productDesc: "",
       photo: "",
       price: 0,
@@ -46,24 +55,35 @@ export default function DetailProductPage() {
 
   useEffect(() => {
     if (searchParams) {
-      const productName = searchParams.get("productName");
-      const productDetail = searchParams.get("productDetail");
-      const productDesc = searchParams.get("productDesc");
-      const photo = searchParams.get("photo");
-      const price = searchParams.get("price");
-      const qty = searchParams.get("qty");
+      const id = searchParams.get("id");
+      if (!id) {
+        setValue("productName", "");
+        setValue("productColorway", []);
+        setValue("productDesc", "");
+        setValue("photo", "");
+        setValue("price", 0);
+        setValue("qty", 0);
+        setPreviewUrl("/placeholder.svg");
+      } else {
+        const productName = searchParams.get("productName");
+        const productColorway = searchParams.get("productColorway");
+        const productDesc = searchParams.get("productDesc");
+        const photo = searchParams.get("photo");
+        const price = searchParams.get("price");
+        const qty = searchParams.get("qty");
 
-      if (productName) setValue("productName", productName);
-      if (productDetail) setValue("productDetail", productDetail);
-      if (productDesc) setValue("productDesc", productDesc);
-      if (photo) {
-        setValue("photo", photo)
-        setPreviewUrl(photo) 
-      };
-      if (price) setValue("price", parseFloat(price));
-      if (qty) setValue("qty", parseInt(qty));
+        if (productName) setValue("productName", productName);
+        if (productColorway) setValue("productColorway", productColorway.split(','));
+        if (productDesc) setValue("productDesc", productDesc);
+        if (photo) {
+          setValue("photo", photo);
+          setPreviewUrl(photo);
+        };
+        if (price) setValue("price", parseFloat(price));
+        if (qty) setValue("qty", parseInt(qty));
+      }
     }
-  }, [searchParams, setValue]);
+  }, [searchParams, setValue, id]);
 
   const productData = watch();
 
@@ -92,7 +112,9 @@ export default function DetailProductPage() {
   return (
     <AdminLayout>
       <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-6">Edit Product : {id}</h1>
+        <MyBreadcrumbs user={"Admin"} menu={["Product Stock", id ? "Edit Product" : "Add Product"]} link={["/admin/product/stock"]}/>
+        <EmblaCarousel slides={SLIDES} options={OPTIONS} />
+        <h1 className="text-2xl font-bold my-6">{id ? "Edit Product" : "Add Product"}</h1>
         <div className="grid md:grid-cols-[300px_1fr] gap-8">
           {/* Image Upload Section */}
           <div className="space-y-4">
@@ -136,11 +158,11 @@ export default function DetailProductPage() {
             </div>
 
             <div>
-              <Label htmlFor="productDetail">Product Detail</Label>
+              <Label htmlFor="productColorway">Product Detail</Label>
               <Controller
-                name="productDetail"
+                name="productColorway"
                 control={control}
-                render={({ field }) => <Input {...field} id="productDetail" placeholder="Enter product detail" />}
+                render={({ field }) => <Input {...field} id="productColorway" placeholder="Enter product detail" />}
               />
             </div>
 
@@ -225,8 +247,6 @@ export default function DetailProductPage() {
                 </Button>
               </div>
             </div>
-
-
           </form>
         </div>
       </div>

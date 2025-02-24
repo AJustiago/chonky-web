@@ -46,13 +46,13 @@ export const columns: ColumnDef<Product>[] = [
     ),
   },
   {
-    accessorKey: "productDetail",
+    accessorKey: "productColorway",
     header: ({ column }) => (
       <div
         className="cursor-pointer flex items-center"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Product Detail
+        Product Colorway
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </div>
     ),
@@ -140,15 +140,16 @@ export const columns: ColumnDef<Product>[] = [
             size="icon"
             onClick={() => {
               const queryParams = new URLSearchParams({
+                id: data.id || "",
                 productName: data.productName,
-                productDetail: data.productDetail || '',
+                productColorway: data.productColorway ? data.productColorway.join(',') : "",
                 productDesc: data.productDesc || '',
                 photo: data.photo,
                 price: String(data.price),
                 qty: String(data.qty),
               }).toString();
 
-              router.push(`/admin/product/stock/${data.id}?${queryParams}`);
+              router.push(`/admin/product/stock/detail/?${queryParams}`);
             }}
           >
             <Pencil className="h-4 w-4" />

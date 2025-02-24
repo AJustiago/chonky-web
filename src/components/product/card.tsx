@@ -18,7 +18,7 @@ export function ProductCard(props: ProductCardProps) {
     return <div className="text-red-500">Invalid product data</div>;
   }
 
-  const { productName, productDetail, photo, price, qty, functionEnabled } = parsedProps.data;
+  const { productName, productColorway, photo, price, qty, functionEnabled } = parsedProps.data;
   const [quantity, setQuantity] = useState(1);
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
@@ -43,7 +43,7 @@ export function ProductCard(props: ProductCardProps) {
         <div className="flex justify-between items-start mb-2">
           <div>
             <h3 className="font-semibold text-lg">{productName}</h3>
-            <span className="text-l block mb-4">{productDetail}</span>
+            <span className="text-lg block mb-4">{productColorway?.join(', ')}</span>
             <span className="text-xl font-bold">{formattedPrice}</span>
           </div>
           <div className="flex items-center space-x-2">

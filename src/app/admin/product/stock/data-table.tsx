@@ -92,7 +92,9 @@ export function DataTable<TData, TValue>({
             </Button>
           </div> */}
         </div>
-        <Button variant="outline"><PackagePlusIcon />Add New Product</Button>
+        <a href="/admin/product/stock/detail/">
+          <Button variant="outline"><PackagePlusIcon />Add New Product</Button>
+        </a>
       </div>
       <div className="flex items-center space-x-2 my-4">
         <span className="text-sm">Rows per page:</span>

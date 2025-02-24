@@ -15,7 +15,7 @@ interface DialogPreviewProps {
 
 const DialogPreview: React.FC<DialogPreviewProps> = ({ isOpen, onClose, data }) => {
   const [productName] = useState(data.productName);
-  const [productDetail] = useState(data.productDetail);
+  const [productColorway] = useState(data.productColorway);
   const [productDesc] = useState(data.productDesc)
   const [photo] = useState(data.photo);
   const [price] = useState(String(data.price));
@@ -33,11 +33,11 @@ const DialogPreview: React.FC<DialogPreviewProps> = ({ isOpen, onClose, data }) 
         <div className="flex gap-6">
           <div className="m-4 w-auto">
             <ProductCard
-              productName={productName}
-              productDetail={productDetail}
-              photo={photo}
-              price={Number(price)}
-              qty={Number(qty)}
+              productName={productName || "Product Name"}
+              productColorway={productColorway || [""]}
+              photo={photo || "/placeholder.svg"}
+              price={Number(price) || 0}
+              qty={Number(qty) || 0}
               functionEnabled={false}
             />
           </div>
