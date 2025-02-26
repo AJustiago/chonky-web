@@ -26,15 +26,15 @@ import { PackagePlusIcon } from "lucide-react"
 import { Product } from "@/schemas/product.schema";
 
 interface DataTableProps {
-  columns: ColumnDef<Product, any>[]
+  columns: ColumnDef<Product>[]
   data: Product[]
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable({
   columns,
   data,
 }: DataTableProps) {
-  const [tableData, setTableData] = React.useState(data);
+  const [tableData] = React.useState(data);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = React.useState({});

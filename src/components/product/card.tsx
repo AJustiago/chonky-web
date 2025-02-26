@@ -10,6 +10,7 @@ import { productSchema, Product } from "@/schemas/product.schema";
 type ProductCardProps = Product;
 
 export function ProductCard(props: ProductCardProps) {
+  const [quantity, setQuantity] = useState(1);
 
   const parsedProps = productSchema.safeParse(props);
 
@@ -19,7 +20,6 @@ export function ProductCard(props: ProductCardProps) {
   }
 
   const { productName, productColorway, photo, price, qty, functionEnabled } = parsedProps.data;
-  const [quantity, setQuantity] = useState(1);
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
     style: "currency",

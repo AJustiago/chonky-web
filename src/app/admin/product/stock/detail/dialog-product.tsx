@@ -16,7 +16,6 @@ interface DialogPreviewProps {
 const DialogPreview: React.FC<DialogPreviewProps> = ({ isOpen, onClose, data }) => {
   const [productName] = useState(data.productName);
   const [productColorway] = useState(data.productColorway);
-  const [productDesc] = useState(data.productDesc)
   const [photo] = useState(data.photo);
   const [price] = useState(String(data.price));
   const [qty] = useState(String(data.qty));

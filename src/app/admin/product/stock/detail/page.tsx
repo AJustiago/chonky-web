@@ -3,10 +3,9 @@
 import AdminLayout from "@/components/admin/adminLayout";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon } from "lucide-react";
 import { productSchema, Product } from "@/schemas/product.schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,9 +20,15 @@ import EmblaCarousel from "@/components/global/carousel/embla-carousel";
 import '@/styles/embla.css'
 
 export default function DetailProductPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DetailProductContent />
+    </Suspense>
+  );
+}
+
+function DetailProductContent() {
   const OPTIONS: EmblaOptionsType = {}
-  const SLIDE_COUNT = 5
-  const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
 
   const router = useRouter();
   const params = useParams();
@@ -33,7 +38,7 @@ export default function DetailProductPage() {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [_, setPreviewUrl] = useState<string>("");
 
   const {
     control,
@@ -100,49 +105,24 @@ export default function DetailProductPage() {
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setValue("photo", url);
-    }
-  };
+  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     const url = URL.createObjectURL(file);
+  //     setPreviewUrl(url);
+  //     setValue("photo", url);
+  //   }
+  // };
   
   return (
     <AdminLayout>
       <div className="container mx-auto p-4">
         <MyBreadcrumbs user={"Admin"} menu={["Product Stock", id ? "Edit Product" : "Add Product"]} link={["/admin/product/stock"]}/>
-        <EmblaCarousel slides={SLIDES} options={OPTIONS} />
         <h1 className="text-2xl font-bold my-6">{id ? "Edit Product" : "Add Product"}</h1>
         <div className="grid md:grid-cols-[300px_1fr] gap-8">
           {/* Image Upload Section */}
           <div className="space-y-4">
-            <div className="relative border-2 border-dashed border-gray-200 rounded-lg aspect-square flex flex-col items-center justify-center overflow-hidden">
-              {previewUrl ? (
-                <div className="relative w-full h-full group">
-                  <img
-                    src={previewUrl || "/placeholder.svg"}
-                    alt="Product preview"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Button variant="secondary" onClick={() => document.getElementById("photo-upload")?.click()}>
-                      Change Image
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <label
-                  htmlFor="photo-upload"
-                  className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
-                >
-                  <ImageIcon className="w-12 h-12 text-gray-400 mb-2" />
-                  <span className="text-sm text-gray-500 uppercase">Upload Images</span>
-                </label>
-              )}
-              <input type="file" id="photo-upload" accept="image/*" onChange={handleImageUpload} className="hidden" />
-            </div>
+            <EmblaCarousel imagePath={productData.photo ? [productData.photo] : []} options={OPTIONS} key={id} />
           </div>
 
           {/* Form Section */}
