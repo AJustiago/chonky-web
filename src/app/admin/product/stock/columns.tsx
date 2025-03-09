@@ -12,9 +12,9 @@ import { useState } from "react";
 export const ProductTable = () => {
   const router = useRouter();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleteId, setDeleteId] = useState<string | "">("");
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     setDeleteId(id);
     setIsDeleteOpen(true);
   };
@@ -32,7 +32,7 @@ export const ProductTable = () => {
 
   const columns: ColumnDef<Product>[] = [
     {
-      accessorKey: "product_name",
+      accessorKey: "productName",
       header: ({ column }) => (
         <div
           className="cursor-pointer flex items-center"
@@ -44,7 +44,7 @@ export const ProductTable = () => {
       ),
     },
     {
-      accessorKey: "product_colorway",
+      accessorKey: "productColorway",
       header: ({ column }) => (
         <div
           className="cursor-pointer flex items-center"
@@ -110,6 +110,7 @@ export const ProductTable = () => {
       header: "Actions",
       cell: ({ row }) => {
         const data = row.original;
+
         return (
           <div className="flex items-center gap-2">
             <Button
@@ -117,22 +118,24 @@ export const ProductTable = () => {
               size="icon"
               onClick={() => {
                 const queryParams = new URLSearchParams({
-                  id: String(data.id) || "",
-                  product_name: data.product_name,
-                  product_colorway: data.product_colorway, 
-                  product_desc: data.product_desc || "",
+                  id: data.id || "",
+                  productName: data.productName,
+                  productColorway: data.productColorway
+                    ? data.productColorway.join(",")
+                    : "",
+                  productDesc: data.productDesc || "",
                   photo: data.photo,
                   price: String(data.price),
                   qty: String(data.qty),
-                }).toString();                
-                
+                }).toString();
+
                 router.push(`/admin/product/stock/detail/?${queryParams}`);
               }}
             >
               <Pencil className="h-4 w-4" />
             </Button>
 
-            <Button variant="outline" size="icon" onClick={() => handleDelete(data.id || 0)}>
+            <Button variant="outline" size="icon" onClick={() => handleDelete(data.id!)}>
               <Trash2 className="h-4 w-4" />
             </Button>
 

@@ -19,7 +19,7 @@ export function ProductCard(props: ProductCardProps) {
     return <div className="text-red-500">Invalid product data</div>;
   }
 
-  const { product_name, product_colorway, photo, price, qty, functionEnabled } = parsedProps.data;
+  const { productName, productColorway, photo, price, qty, functionEnabled } = parsedProps.data;
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -37,13 +37,13 @@ export function ProductCard(props: ProductCardProps) {
   return (
     <Card className="w-[400px] h-[450px] overflow-hidden p-4">
       <div className="relative w-full h-48">
-        <img src={photo || "/placeholder.svg"} alt={product_name} className="w-full h-48 object-cover" />
+        <img src={photo || "/placeholder.svg"} alt={productName} className="w-full h-48 object-cover" />
       </div>
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <div>
-            <h3 className="font-semibold text-lg">{product_name}</h3>
-            <span className="text-lg block mb-4">{product_colorway}</span>
+            <h3 className="font-semibold text-lg">{productName}</h3>
+            <span className="text-lg block mb-4">{productColorway?.join(', ')}</span>
             <span className="text-xl font-bold">{formattedPrice}</span>
           </div>
           <div className="flex items-center space-x-2">
