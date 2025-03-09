@@ -1,135 +1,71 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { EmblaOptionsType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
-import { Button } from "@/components/ui/button";
-import { ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { Thumb } from './embla-carousel-thumbs'
 
 type PropType = {
-  imagePath: string[]
+  slides: number[]
   options?: EmblaOptionsType
 }
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-
-  const [_, setPreviewUrl] = useState<string>("");
-  const [imageList, setImageList] = useState<string[]>(props.imagePath);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
-
-  const addNewImageSlot = () => {
-    if (imageList.length < 5) {
-      setImageList([...imageList, ""]);
-    }
-  };
-
-  const removeImageSlot = (index: number) => {
-    if (imageList.length > 1) {
-      setImageList(imageList.filter((_, i) => i !== index));
-    }
-  };
-
-  const { options } = props;
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [emblaMainRef, emblaMainApi] = useEmblaCarousel(options);
+  const { slides, options } = props
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [emblaMainRef, emblaMainApi] = useEmblaCarousel(options)
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
     containScroll: 'keepSnaps',
     dragFree: true
-  });
+  })
 
   const onThumbClick = useCallback(
     (index: number) => {
-      if (!emblaMainApi || !emblaThumbsApi) return;
-      emblaMainApi.scrollTo(index);
+      if (!emblaMainApi || !emblaThumbsApi) return
+      emblaMainApi.scrollTo(index)
     },
     [emblaMainApi, emblaThumbsApi]
-  );
+  )
 
   const onSelect = useCallback(() => {
-    if (!emblaMainApi || !emblaThumbsApi) return;
-    setSelectedIndex(emblaMainApi.selectedScrollSnap());
-    emblaThumbsApi.scrollTo(emblaMainApi.selectedScrollSnap());
-  }, [emblaMainApi, emblaThumbsApi, setSelectedIndex]);
+    if (!emblaMainApi || !emblaThumbsApi) return
+    setSelectedIndex(emblaMainApi.selectedScrollSnap())
+    emblaThumbsApi.scrollTo(emblaMainApi.selectedScrollSnap())
+  }, [emblaMainApi, emblaThumbsApi, setSelectedIndex])
 
   useEffect(() => {
-    if (!emblaMainApi) return;
-    onSelect();
-    emblaMainApi.on('select', onSelect).on('reInit', onSelect);
-  }, [emblaMainApi, onSelect]);
-  
-    return (
-      <div className="space-y-4">
-        <div className="embla">
-          <div className="embla__viewport" ref={emblaMainRef}>
-            <div className="embla__container">
-            {imageList.map((path, index) => (
-                <div key={index} className="embla__slide">
-                    <div className="relative border-2 border-dashed border-gray-200 rounded-lg aspect-square flex flex-col items-center justify-center overflow-hidden">
-                    {path ? (
-                        <div className="relative w-full h-full group">
-                        <img
-                            src={path || "/placeholder.svg"}
-                            alt="Product preview"
-                            className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <Button variant="secondary" onClick={() => document.getElementById("photo-upload")?.click()}>
-                            Change Image
-                            </Button>
-                        </div>
-                        </div>
-                    ) : (
-                        <label
-                        htmlFor="photo-upload"
-                        className="w-full h-full flex flex-col items-center justify-center cursor-pointer"
-                        >
-                        <ImageIcon className="w-12 h-12 text-gray-400 mb-2" />
-                        <span className="text-sm text-gray-500 uppercase">Upload Images</span>
-                        </label>
-                    )}
-                    <input type="file" id="photo-upload" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                    </div>
-                </div>
-            ))}
+    if (!emblaMainApi) return
+    onSelect()
+
+    emblaMainApi.on('select', onSelect).on('reInit', onSelect)
+  }, [emblaMainApi, onSelect])
+
+  return (
+    <div className="embla">
+      <div className="embla__viewport" ref={emblaMainRef}>
+        <div className="embla__container">
+          {slides.map((index) => (
+            <div className="embla__slide" key={index}>
+              <div className="embla__slide__number">{index + 1}</div>
             </div>
-          </div>
+          ))}
         </div>
-  
-        <div className="embla-thumbs">
-          <div className="embla-thumbs__viewport" ref={emblaThumbsRef}>
-            <div className="embla-thumbs__container flex items-center gap-2">
-              {imageList.map((path, index) => (
-                <div key={index} className="flex items-center gap-1">
-                  <Button
-                    variant={index === selectedIndex ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => onThumbClick(index)}
-                  >
-                    {index + 1}
-                  </Button>
-                  {imageList.length > 1 && (
-                    <Button variant="destructive" size="sm" onClick={() => removeImageSlot(index)}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              {imageList.length < 5 && (
-                <Button variant="outline" size="sm" onClick={addNewImageSlot}>
-                  <Plus className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
+      </div>
+
+      <div className="embla-thumbs">
+        <div className="embla-thumbs__viewport" ref={emblaThumbsRef}>
+          <div className="embla-thumbs__container">
+            {slides.map((index) => (
+              <Thumb
+                key={index}
+                onClick={() => onThumbClick(index)}
+                selected={index === selectedIndex}
+                index={index}
+              />
+            ))}
           </div>
         </div>
       </div>
-    );
-  }
-  
+    </div>
+  )
+}
 
 export default EmblaCarousel
