@@ -34,32 +34,23 @@ export function DataTable({
   columns,
   data,
 }: DataTableProps) {
-  const [tableData] = React.useState(data);
+  console.log(data);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data: tableData,
+    data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 5, 
-      },
-    },
-  })
+    state: { sorting, columnFilters },
+    initialState: { pagination: { pageSize: 5 } },
+  });
+  
 
   // const handleDeleteSelected = () => {
   //   const selectedRowIds = table.getSelectedRowModel().rows.map((row) => row.original.id);

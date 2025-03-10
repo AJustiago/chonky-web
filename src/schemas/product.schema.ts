@@ -5,7 +5,7 @@ export const productSchema = z.object({
   productName: z.string().min(1, "Product name is required"),
   productColorway: z.array(z.string()|| "").optional(),
   productDesc: z.string().optional(),
-  photo: z.string().refine((val) => val.startsWith("/") || val.startsWith("http"), {
+  photo: z.array(z.string().refine((val) => val.startsWith("/") || val.startsWith("http")), {
     message: "Image path must start with '/' or be a valid URL",
   }),
   price: z.number().min(0, "Price must be a positive number"),

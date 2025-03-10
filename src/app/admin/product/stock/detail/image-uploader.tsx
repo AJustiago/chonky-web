@@ -10,6 +10,7 @@ interface ImageUploaderProps {
 }
 
 const ImageUploader = ({ images, setImages, maxImages = 5 }: ImageUploaderProps) => {
+  console.log(images);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -103,6 +104,7 @@ const ImageUploader = ({ images, setImages, maxImages = 5 }: ImageUploaderProps)
             </p>
           </div>
           <input
+            title='image-uploader'
             type="file"
             ref={fileInputRef}
             className="hidden"

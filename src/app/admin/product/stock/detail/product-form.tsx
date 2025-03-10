@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card';
 import { toast } from 'sonner';
 import ImageUploader from './image-uploader';
 import ColorwayManager from './colorway-uploader';
 
 interface ProductFormProps {
   onSubmit?: (productData: ProductData) => void;
+  initialValues?: ProductData | null;
 }
 
 export interface ProductData {
+  id?: string;
   name: string;
   description: string;
   colorways: string[];
@@ -21,7 +23,8 @@ export interface ProductData {
   images: string[];
 }
 
-const ProductForm = ({ onSubmit }: ProductFormProps) => {
+
+const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -29,6 +32,17 @@ const ProductForm = ({ onSubmit }: ProductFormProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [price, setPrice] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (initialValues) {
+      setImages(initialValues.images || []);
+      setName(initialValues.name || '');
+      setDescription(initialValues.description || '');
+      setColorways(initialValues.colorways || []);
+      setQuantity(initialValues.quantity || 1);
+      setPrice(initialValues.price || 0);
+    }
+  }, [initialValues]);
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -52,6 +66,7 @@ const ProductForm = ({ onSubmit }: ProductFormProps) => {
     setIsSubmitting(true);
     
     const productData: ProductData = {
+      id: initialValues?.id,
       name,
       description,
       colorways,
@@ -105,8 +120,10 @@ const ProductForm = ({ onSubmit }: ProductFormProps) => {
     setImages([]);
   };
 
+  console.log(images)
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+    <form onSubmit={handleSubmit} className="max-w-4xl">
       <Card className="border border-border/40 bg-card/80 backdrop-blur-sm shadow-sm">
         <CardHeader>
           <CardDescription>

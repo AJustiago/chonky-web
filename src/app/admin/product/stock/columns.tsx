@@ -59,7 +59,8 @@ export const ProductTable = () => {
       accessorKey: "photo",
       header: "Product Photo",
       cell: ({ row }) => {
-        const src = row.getValue("photo");
+        const photos = row.getValue("photo");
+        const src = Array.isArray(photos) ? photos[0] : "";
         return (
           <div className="">
             <img
@@ -110,7 +111,7 @@ export const ProductTable = () => {
       header: "Actions",
       cell: ({ row }) => {
         const data = row.original;
-
+        console.log(data.photo)
         return (
           <div className="flex items-center gap-2">
             <Button
@@ -124,7 +125,9 @@ export const ProductTable = () => {
                     ? data.productColorway.join(",")
                     : "",
                   productDesc: data.productDesc || "",
-                  photo: data.photo,
+                  photo: data.photo
+                    ? data.photo.join(",")
+                    : "",
                   price: String(data.price),
                   qty: String(data.qty),
                 }).toString();
