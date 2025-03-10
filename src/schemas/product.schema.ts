@@ -2,14 +2,12 @@ import { z } from "zod";
 
 export const productSchema = z.object({
   id: z.string().optional(),
-  productName: z.string().min(1, "Product name is required"),
-  productColorway: z.array(z.string()|| "").optional(),
-  productDesc: z.string().optional(),
-  photo: z.array(z.string().refine((val) => val.startsWith("/") || val.startsWith("http")), {
-    message: "Image path must start with '/' or be a valid URL",
-  }),
-  price: z.number().min(0, "Price must be a positive number"),
-  qty: z.number().int().min(0, "Quantity must be a non-negative integer"),
+  name: z.string(),
+  colorways: z.array(z.string()),
+  description: z.string().optional(),
+  images: z.array(z.string()),
+  price: z.number().min(0),
+  quantity: z.number().int().min(0),
   functionEnabled: z.boolean().default(false),
 });
 

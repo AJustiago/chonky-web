@@ -32,7 +32,7 @@ export const ProductTable = () => {
 
   const columns: ColumnDef<Product>[] = [
     {
-      accessorKey: "productName",
+      accessorKey: "name",
       header: ({ column }) => (
         <div
           className="cursor-pointer flex items-center"
@@ -44,7 +44,7 @@ export const ProductTable = () => {
       ),
     },
     {
-      accessorKey: "productColorway",
+      accessorKey: "colorways",
       header: ({ column }) => (
         <div
           className="cursor-pointer flex items-center"
@@ -56,11 +56,11 @@ export const ProductTable = () => {
       ),
     },
     {
-      accessorKey: "photo",
-      header: "Product Photo",
+      accessorKey: "images",
+      header: "Product images",
       cell: ({ row }) => {
-        const photos = row.getValue("photo");
-        const src = Array.isArray(photos) ? photos[0] : "";
+        const imagess = row.getValue("images");
+        const src = Array.isArray(imagess) ? imagess[0] : "";
         return (
           <div className="">
             <img
@@ -95,13 +95,13 @@ export const ProductTable = () => {
       enableSorting: true,
     },
     {
-      accessorKey: "qty",
+      accessorKey: "quantity",
       header: ({ column }) => (
         <div
           className="cursor-pointer flex items-center"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Product Qty
+          Product quantity
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </div>
       ),
@@ -111,7 +111,7 @@ export const ProductTable = () => {
       header: "Actions",
       cell: ({ row }) => {
         const data = row.original;
-        console.log(data.photo)
+        console.log(data.images)
         return (
           <div className="flex items-center gap-2">
             <Button
@@ -120,16 +120,16 @@ export const ProductTable = () => {
               onClick={() => {
                 const queryParams = new URLSearchParams({
                   id: data.id || "",
-                  productName: data.productName,
-                  productColorway: data.productColorway
-                    ? data.productColorway.join(",")
+                  name: data.name,
+                  colorways: data.colorways
+                    ? data.colorways.join(",")
                     : "",
-                  productDesc: data.productDesc || "",
-                  photo: data.photo
-                    ? data.photo.join(",")
+                  description: data.description || "",
+                  images: data.images
+                    ? data.images.join(",")
                     : "",
                   price: String(data.price),
-                  qty: String(data.qty),
+                  quantity: String(data.quantity),
                 }).toString();
 
                 router.push(`/admin/product/stock/detail/?${queryParams}`);

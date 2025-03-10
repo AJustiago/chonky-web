@@ -7,6 +7,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/co
 import { toast } from 'sonner';
 import ImageUploader from './image-uploader';
 import ColorwayManager from './colorway-uploader';
+import DialogPreview from "./dialog-product";
+import { Eye } from 'lucide-react';
+import { productSchema } from '@/schemas/product.schema';
 
 interface ProductFormProps {
   onSubmit?: (productData: ProductData) => void;
@@ -23,7 +26,6 @@ export interface ProductData {
   images: string[];
 }
 
-
 const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [name, setName] = useState('');
@@ -32,6 +34,8 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [price, setPrice] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewData, setPreviewData] = useState({});
 
   useEffect(() => {
     if (initialValues) {
@@ -43,6 +47,27 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
       setPrice(initialValues.price || 0);
     }
   }, [initialValues]);
+
+  const handlePreview = () => {
+    const data = {
+      name: name, 
+      colorways: colorways, 
+      images: images, 
+      price: price, 
+      quantity: quantity,
+      functionEnabled: false,
+    };
+
+    const parsedData = productSchema.safeParse(data);
+    if (!parsedData.success) {
+      console.error("Invalid product data:", parsedData.error.format());
+      toast.error("Invalid product data for preview");
+      return;
+    }
+
+    setPreviewData(parsedData.data); 
+    setIsPreviewOpen(true);
+  };
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -86,7 +111,7 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
       setIsSubmitting(false);
     }
   };
-  
+
   const validateForm = (): boolean => {
     if (!name.trim()) {
       toast.error('Please enter a product name');
@@ -119,8 +144,6 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
     setPrice(0);
     setImages([]);
   };
-
-  console.log(images)
 
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl">
@@ -198,19 +221,40 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
           </div>
         </CardContent>
         <CardFooter className="flex justify-end gap-2">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={resetForm}
-          >
-            Reset
-          </Button>
-          <Button 
-            type="submit" 
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Adding...' : 'Add Product'}
-          </Button>
+          <div className="flex items-center w-full gap-80">
+            <Button
+              variant="outline"
+              type="button"
+              className="w-1/3"
+              onClick={handlePreview}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
+            </Button>
+
+            {/* DialogPreview Component */}
+            <DialogPreview
+              isOpen={isPreviewOpen}
+              onClose={() => setIsPreviewOpen(false)}
+              data={previewData}
+            />
+
+            <div className="flex gap-2 w-2/3 justify-end">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={resetForm}
+              >
+                Reset
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Adding...' : 'Add Product'}
+              </Button>
+            </div>
+          </div>
         </CardFooter>
       </Card>
     </form>

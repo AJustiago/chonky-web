@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ProductCard } from "@/components/product/card";
 import { DialogDescription } from "@radix-ui/react-dialog";
@@ -14,13 +14,6 @@ interface DialogPreviewProps {
 }
 
 const DialogPreview: React.FC<DialogPreviewProps> = ({ isOpen, onClose, data }) => {
-  const [productName] = useState(data.productName);
-  const [productColorway] = useState(data.productColorway);
-  const [photo] = useState(data.photo);
-  const [price] = useState(String(data.price));
-  const [qty] = useState(String(data.qty));
-
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[30rem]">
@@ -32,11 +25,11 @@ const DialogPreview: React.FC<DialogPreviewProps> = ({ isOpen, onClose, data }) 
         <div className="flex gap-6">
           <div className="m-4 w-auto">
             <ProductCard
-              productName={productName || "Product Name"}
-              productColorway={productColorway || [""]}
-              photo={photo || "/placeholder.svg"}
-              price={Number(price) || 0}
-              qty={Number(qty) || 0}
+              name={data.name || "Product Name"}
+              colorways={data.colorways || [""]}
+              images={data.images || ["/placeholder.svg"]}
+              price={data.price || 0}
+              quantity={data.quantity || 0}
               functionEnabled={false}
             />
           </div>

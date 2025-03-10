@@ -35,12 +35,12 @@ function DetailProductContent() {
     if (id) {
       setProductData({
         id,
-        name: searchParams.get("productName") || "",
-        description: decodeURIComponent(searchParams.get("productDesc") || ""),
-        colorways: decodeURIComponent(searchParams.get("productColorway") || "").split(","),
-        quantity: parseInt(searchParams.get("qty") || "1", 10),
+        name: searchParams.get("name") || "",
+        description: decodeURIComponent(searchParams.get("description") || ""),
+        colorways: decodeURIComponent(searchParams.get("colorways") || "").split(","),
+        quantity: parseInt(searchParams.get("quantity") || "1", 10),
         price: parseFloat(searchParams.get("price") || "0"),
-        images: decodeURIComponent(searchParams.get("photo") || "").split(",")
+        images: decodeURIComponent(searchParams.get("images") || "").split(",")
       });
     }
   }, [searchParams]);
