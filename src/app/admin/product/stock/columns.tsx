@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import DialogDelete from "@/components/global/dialog-delete";
 import { useState } from "react";
+import Image from "next/image";
 
 export const ProductTable = () => {
   const router = useRouter();
@@ -62,13 +63,13 @@ export const ProductTable = () => {
         const imagess = row.getValue("images");
         const src = Array.isArray(imagess) ? imagess[0] : "";
         return (
-          <div className="">
-            <img
-              src={src as string}
-              alt="Product"
-              className="w-16 h-16 object-cover rounded-md"
-            />
-          </div>
+          <Image
+            src={src as string}
+            alt="Product"
+            width={64} // Equivalent to w-16 in Tailwind
+            height={64} // Equivalent to h-16 in Tailwind
+            className="object-cover rounded-md"
+          />
         );
       },
     },

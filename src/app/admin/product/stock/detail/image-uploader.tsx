@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Image, ImagePlus, X } from 'lucide-react';
+import { ImageIcon, ImagePlus, X } from 'lucide-react';
 import { toast } from 'sonner';
-
+import  Image from "next/image";
 interface ImageUploaderProps {
   images: string[];
   setImages: (images: string[]) => void;
@@ -88,7 +88,7 @@ const ImageUploader = ({ images, setImages, maxImages = 5 }: ImageUploaderProps)
         onDrop={handleDrop}
       >
         <div className="flex flex-col items-center justify-center gap-2">
-          <Image className="w-10 h-10 text-muted-foreground" />
+          <ImageIcon className="w-10 h-10 text-muted-foreground" />
           <div className="text-center">
             <p className="text-sm font-medium">
               Drag and drop images, or{" "}
@@ -131,10 +131,11 @@ const ImageUploader = ({ images, setImages, maxImages = 5 }: ImageUploaderProps)
               key={index} 
               className="relative group rounded-lg overflow-hidden aspect-square border bg-muted/30 animate-fade-in"
             >
-              <img 
-                src={image} 
-                alt={`Product image ${index + 1}`} 
-                className="w-full h-full object-cover" 
+              <Image
+                src={image}
+                alt={`Product image ${index + 1}`}
+                layout="fill"
+                className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200"></div>
               <button

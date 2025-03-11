@@ -11,6 +11,7 @@ import { AutoCarousel } from "../global/carousel/autoplay-carousel";
 type ProductCardProps = Product;
 
 export function ProductCard( props: ProductCardProps ) {
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
   const parsedProps = productSchema.safeParse(props);
   
   if (!parsedProps.success) {
@@ -20,7 +21,6 @@ export function ProductCard( props: ProductCardProps ) {
 
   const { name, colorways, images, price, quantity: stock, functionEnabled } = parsedProps.data;
   
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
     style: "currency",

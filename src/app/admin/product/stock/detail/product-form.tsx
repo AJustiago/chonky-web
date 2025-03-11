@@ -35,7 +35,15 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
   const [price, setPrice] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [previewData, setPreviewData] = useState({});
+  const [previewData, setPreviewData] = useState<ProductData & { functionEnabled: boolean }>({
+    name: '',
+    description: '',
+    colorways: [],
+    images: [],
+    price: 0,
+    quantity: 1,
+    functionEnabled: false,
+  });
 
   useEffect(() => {
     if (initialValues) {
@@ -65,7 +73,7 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
       return;
     }
 
-    setPreviewData(parsedData.data); 
+    setPreviewData(parsedData.data as ProductData & { functionEnabled: boolean }); 
     setIsPreviewOpen(true);
   };
 

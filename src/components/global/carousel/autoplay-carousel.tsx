@@ -1,12 +1,11 @@
 import * as React from "react";
 import Autoplay from "embla-carousel-autoplay";
-
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import Image from "next/image";
 
 interface CarouselPluginProps {
   values: string[];
@@ -18,29 +17,37 @@ export function AutoCarousel({ values }: CarouselPluginProps) {
   return (
     <Carousel 
       plugins={[plugin.current]} 
-      onMouseEnter={() => plugin.current.stop()}
-      onMouseLeave={() => plugin.current.play()}
+      {...(values.length > 1 ? {
+        onMouseEnter: () => plugin.current.stop(),
+        onMouseLeave: () => plugin.current?.play(),
+      } : {})}
     >
       <CarouselContent>
         {values.length > 0
           ? values.map((image, index) => (
               <CarouselItem key={index}>
                 <div>
-                  <img
-                    src={image || "./placeholder.svg"}
-                    alt={`Slide ${index + 1}`}
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
+                <Image
+                  src={image || "/placeholder.svg"}
+                  alt={`Slide ${index + 1}`}
+                  width={300} 
+                  height={192}
+                  className="w-full h-48 object-cover rounded-lg"
+                  priority 
+                  unoptimized
+                />
                 </div>
               </CarouselItem>
             ))
           : [<CarouselItem key="placeholder">
               <div>
-                <img
-                  src="./placeholder.svg"
-                  alt="Placeholder"
-                  className="w-full h-48 object-cover rounded-lg"
-                />
+              <Image
+                src="/placeholder.svg"
+                alt="Placeholder"
+                width={400} 
+                height={192}
+                className="w-full h-48 object-cover rounded-lg"
+              />
               </div>
             </CarouselItem>]}
       </CarouselContent>
