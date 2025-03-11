@@ -13,7 +13,7 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 1,
     status: "ongoing",
     participants: 342,
-    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWFjYm9va3xlbnwwfHwwfHx8MA%3D%3D"
+    imageUrl: "/placeholder.svg"
   },
   {
     id: "2",
@@ -26,7 +26,7 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 2,
     status: "ongoing",
     participants: 567,
-    imageUrl: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGxheXN0YXRpb24lMjA1fGVufDB8fDB8fHww"
+    imageUrl: "/placeholder.svg"
   },
   {
     id: "3",
@@ -39,7 +39,7 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 3,
     status: "finished",
     participants: 879,
-    imageUrl: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aXBob25lJTIwMTQlMjBwcm98ZW58MHx8MHx8fDA%3D"
+    imageUrl: "/placeholder.svg"
   },
   {
     id: "4",
@@ -52,7 +52,7 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 1,
     status: "finished",
     participants: 423,
-    imageUrl: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8b2xlZCUyMHR2fGVufDB8fDB8fHww"
+    imageUrl: "/placeholder.svg"
   },
 ];
 
