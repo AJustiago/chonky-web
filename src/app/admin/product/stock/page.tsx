@@ -1,39 +1,53 @@
 "use client";
 
 import AdminLayout from '@/components/admin/adminLayout';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ProductTable } from "./columns";
 import { DataTable } from "./data-table";
 import { Product } from "@/types/product";
 import MyBreadcrumbs from '@/components/admin/breadcrumbs';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { getProducts } from '@/services/productService';
 
-// Function to fetch data
-async function getData(): Promise<Product[]> {
-  return [
-    { id: "A001", name: "Apple Iphone", colorways: ["blue", "black", "purple"], description: "this is an electronics device", images: ["/AA.jpeg"], price: 50000, quantity: 12, functionEnabled: false },
-    { id: "A002", name: "Apple Watch", colorways: ["midnight", "sand", "sky"], description: "this is an electronics device", images: ["/AA.jpeg","/AA.jpeg","/AA.jpeg","/AA.jpeg"], price: 500000, quantity: 10, functionEnabled: false },
-    { id: "A003", name: "Samsung S24", colorways: ["white", "ash", "dust"], description: "this is an electronics device", images: ["/AA.jpeg"], price: 5000000, quantity: 1, functionEnabled: false },
-    { id: "A004", name: "Oppo Reno X", colorways: ["grey", "red", "pink"], description: "this is an electronics device", images: ["/AA.jpeg"], price: 5000, quantity: 9, functionEnabled: false },
-  ];
-}
+const ProductPage: React.FC = () => {
+  const queryClient = useQueryClient();
+  
+  const { data: products, isLoading, error } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
-export default function FCFSProductPage() {
-  const [data, setData] = useState<Product[]>([]);
-
-  useEffect(() => {
-    getData().then(setData);
-  }, []);
+  const refreshProducts = () => {
+    queryClient.invalidateQueries({ queryKey: ["products"] });
+  };
 
   const columns = ProductTable();
 
   return (
-    <AdminLayout>
-      <div className="container mx-auto py-10">
-        <div className="flex items-center justify-between mb-4">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
           <MyBreadcrumbs user="Admin" menu={["Product Stock"]} link={[]} />
+          <h1 className="text-2xl font-bold tracking-tight mt-5">Product Stock</h1>
+          <p className="text-muted-foreground">Manage your product.</p>
         </div>
-        <DataTable columns={columns} data={data} />
       </div>
+
+      {isLoading ? (
+        <p>Loading products...</p>
+      ) : error ? (
+        <p className="text-red-500">Error loading products: {(error as Error).message}</p>
+      ) : (
+        <DataTable columns={columns} data={products ?? []} />
+      )}
+    </div>
+  );
+};
+
+export default function ProductPageWrapper() {
+  return (
+    <AdminLayout>
+      <ProductPage />
     </AdminLayout>
   );
 }

@@ -43,7 +43,7 @@ const RafflePage: React.FC = () => {
               <RefreshCw className="mr-2 h-4 w-4" />
               Refresh
             </Button>
-            <Link href="/raffle/new">
+            <Link href="/admin/raffle/list/detail">
               <Button className="bg-raffle-purple hover:bg-raffle-dark-purple">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Raffle
