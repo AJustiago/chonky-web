@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ProductCard } from "@/components/product/card";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { Separator } from "@/components/ui/separator";
-import { Product } from "@/schemas/product.schema";
+import { Product } from "@/types/product";
 
 interface DialogPreviewProps {
   isOpen: boolean;

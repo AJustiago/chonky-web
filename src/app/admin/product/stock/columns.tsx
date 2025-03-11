@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/schemas/product.schema";
+import { Product } from "@/types/product";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import DialogDelete from "@/components/global/dialog-delete";

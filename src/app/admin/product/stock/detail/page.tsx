@@ -4,10 +4,11 @@ import AdminLayout from "@/components/admin/adminLayout";
 import React, { useEffect, useState, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import MyBreadcrumbs from "@/components/admin/breadcrumbs";
-import ProductForm, { ProductData } from "./product-form";
+import ProductForm from "./product-form";
 import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Product } from "@/types/product";
 
 import '@/styles/embla.css'
 
@@ -27,7 +28,7 @@ function DetailProductContent() {
 
   const id = params?.id as string || searchParams.get("id");
 
-  const [productData, setProductData] = useState<ProductData | null>(null);
+  const [productData, setProductData] = useState<Product | null>(null);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -45,9 +46,9 @@ function DetailProductContent() {
     }
   }, [searchParams]);
 
-  const [products, setProducts] = useState<ProductData[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const handleAddProduct = (productData: ProductData) => {
+  const handleAddProduct = (productData: Product) => {
     console.log('Product added:', productData);
     
     setProducts([...products, productData]);

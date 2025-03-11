@@ -23,7 +23,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { PackagePlusIcon } from "lucide-react"
-import { Product } from "@/schemas/product.schema";
+import { Product } from "@/types/product";
 
 interface DataTableProps {
   columns: ColumnDef<Product>[]

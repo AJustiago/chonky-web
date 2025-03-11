@@ -4,7 +4,7 @@ import AdminLayout from '@/components/admin/adminLayout';
 import React, { useEffect, useState } from 'react';
 import { ProductTable } from "./columns";
 import { DataTable } from "./data-table";
-import { Product } from "@/schemas/product.schema";
+import { Product } from "@/types/product";
 import MyBreadcrumbs from '@/components/admin/breadcrumbs';
 
 // Function to fetch data

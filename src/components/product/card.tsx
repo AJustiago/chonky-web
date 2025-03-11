@@ -5,22 +5,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
-import { productSchema, Product } from "@/schemas/product.schema";
+import { Product } from "@/types/product";
 import { AutoCarousel } from "../global/carousel/autoplay-carousel";
 
 type ProductCardProps = Product;
 
-export function ProductCard( props: ProductCardProps ) {
+export function ProductCard(props: ProductCardProps) {
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const parsedProps = productSchema.safeParse(props);
-  
-  if (!parsedProps.success) {
-    console.error("Invalid product data:", parsedProps.error.format());
-    return <div className="text-red-500">Invalid product data</div>;
-  }
 
-  const { name, colorways, images, price, quantity: stock, functionEnabled } = parsedProps.data;
-  
+  // Destructure props directly
+  const { name, colorways, images, price, quantity: stock, functionEnabled } = props;
 
   const formattedPrice = new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -39,8 +33,7 @@ export function ProductCard( props: ProductCardProps ) {
     <Card className="w-[400px] h-[450px] overflow-hidden p-4">
       <div className="relative w-full h-48">
         <div className="w-full h-full object-cover">
-          {/* <img src={"/placeholder.svg"} alt="a" className="w-full h-48 object-cover" /> */}
-          {AutoCarousel({values: images })}
+          {AutoCarousel({ values: images })}
         </div>
       </div>
       <CardContent className="p-4">
@@ -62,7 +55,9 @@ export function ProductCard( props: ProductCardProps ) {
             <Input
               type="number"
               value={selectedQuantity}
-              onChange={(e) => setSelectedQuantity(Math.max(1, Math.min(stock, Number(e.target.value) || 1)))}
+              onChange={(e) =>
+                setSelectedQuantity(Math.max(1, Math.min(stock, Number(e.target.value) || 1)))
+              }
               className="w-16 text-center"
               disabled={!functionEnabled}
             />
