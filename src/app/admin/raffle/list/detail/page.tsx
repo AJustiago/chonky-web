@@ -24,7 +24,7 @@ const RaffleOrderPage = () => {
 
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container">
             <MyBreadcrumbs user={"Admin"} menu={["Product Stock", id ? "Edit Product" : "Add Product"]} link={["/admin/product/stock"]}/>
             <div className="flex items-center my-6 space-x-4">
             <Button variant="outline" onClick={() => router.back()}>

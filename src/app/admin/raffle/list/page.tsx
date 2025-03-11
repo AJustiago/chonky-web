@@ -44,7 +44,7 @@ const RafflePage: React.FC = () => {
               Refresh
             </Button>
             <Link href="/admin/raffle/list/detail">
-              <Button className="bg-raffle-purple hover:bg-raffle-dark-purple">
+              <Button>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Raffle
               </Button>
@@ -73,7 +73,7 @@ const RafflePage: React.FC = () => {
                 {ongoingRaffles.length === 0 ? (
                   <div className="py-10 text-center border rounded-lg">
                     <p className="text-muted-foreground">No ongoing raffles.</p>
-                    <Link href="/raffle/new" className="mt-4 inline-block">
+                    <Link href="/admin/raffle/list/detail" className="mt-4 inline-block">
                       <Button variant="outline">Create your first raffle</Button>
                     </Link>
                   </div>
