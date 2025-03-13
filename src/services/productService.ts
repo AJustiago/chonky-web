@@ -52,10 +52,10 @@ export const getProducts = async (): Promise<Product[]> => {
     });
 };
 
-export const getProductsByName = async (name: string): Promise<Product | undefined> => {
+export const getProductsById = async (id: string): Promise<Product | undefined> => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            const product = products.find( r => r.name === name)
+            const product = products.find( r => r.id === id)
             resolve(product);
         }, 500);
     });

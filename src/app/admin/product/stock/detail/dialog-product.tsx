@@ -26,6 +26,7 @@ const DialogPreview: React.FC<DialogPreviewProps> = ({ isOpen, onClose, data }) 
           <div className="m-4 w-auto">
             <ProductCard
               name={data.name || "Product Name"}
+              description={data.description || "Description"}
               colorways={data.colorways || [""]}
               images={data.images || ["/placeholder.svg"]}
               price={data.price || 0}

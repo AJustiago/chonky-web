@@ -19,9 +19,10 @@ import { Product } from '@/types/product';
 interface ProductFormProps {
   onSubmit?: (productData: Product) => void;
   initialValues?: Product | null;
+  isSubmitting: boolean;
 }
 
-const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
+const ProductForm = ({ initialValues, onSubmit }: ProductFormProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -64,26 +65,12 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
     setIsPreviewOpen(true);
   };
 
-  // const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-  //   if (value === '' || /^\d+(\.\d{0,2})?$/.test(value)) {
-  //     setPrice(value === '' ? 0 : parseFloat(value));
-  //   }
-  // };
-
-  // const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = parseInt(e.target.value);
-  //   if (!isNaN(value) && value >= 0) {
-  //     setQuantity(value);
-  //   }
-  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsSubmitting(true);
     const productData: Product = {
-      id: initialValues?.id,
       name,
       description,
       colorways,
@@ -106,6 +93,10 @@ const ProductForm = ({ onSubmit, initialValues }: ProductFormProps) => {
   const validateForm = (): boolean => {
     if (!name.trim()) {
       toast.error('Please enter a product name');
+      return false;
+    }
+    if (!description.trim()) {
+      toast.error('Please enter a description');
       return false;
     }
     if (images.length === 0) {

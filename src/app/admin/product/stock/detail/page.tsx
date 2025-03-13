@@ -9,8 +9,21 @@ import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Product } from "@/types/product";
-
+import { getProductsById, createProduct, updateProduct } from "@/services/productService";
+import { useQuery } from "@tanstack/react-query";
 import '@/styles/embla.css'
+import { z } from "zod";
+
+const formSchema = z.object({
+  name: z.string().min(2, { message: "Product Name must be at least 2 characters."}),
+  description: z.string().min(10, { message: "Product Description must be at least 10 characters."}),
+  colorways: z.array(z.string()).min(1, { message: "Product Colorway must be at least 1."}),
+  quantity: z.coerce.number().int().positive({ message: "Product Quantity must be positive."}),
+  price: z.coerce.number().int().positive({message : "Product Price must be postive."}),
+  images: z.array(z.string()).min(1, {message: "Product Image must be at least 1."})
+})
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function DetailProductPage() {
   return (
@@ -23,39 +36,70 @@ export default function DetailProductPage() {
 function DetailProductContent() {
   const router = useRouter();
 
-  const params = useParams();
-  const searchParams = useSearchParams();
+  const { id } = useParams<{ id: string }>();
 
-  const id = params?.id as string || searchParams.get("id");
+  const isNew = !id || id === "new";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [productData, setProductData] = useState<Product | null>(null);
+  const { data: product, isLoading } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => (isNew ? null : getProductsById(id)),
+    enabled: !isNew,
+  });
 
-  useEffect(() => {
-    const id = searchParams.get("id");
-
-    if (id) {
-      setProductData({
-        id,
-        name: searchParams.get("name") || "",
-        description: decodeURIComponent(searchParams.get("description") || ""),
-        colorways: decodeURIComponent(searchParams.get("colorways") || "").split(","),
-        quantity: parseInt(searchParams.get("quantity") || "1", 10),
-        price: parseFloat(searchParams.get("price") || "0"),
-        images: decodeURIComponent(searchParams.get("images") || "").split(",")
-      });
-    }
-  }, [searchParams]);
-
-  const [products, setProducts] = useState<Product[]>([]);
-
-  const handleAddProduct = (productData: Product) => {
-    console.log('Product added:', productData);
-    
-    setProducts([...products, productData]);
-    
-    toast.success('Product added successfully', {
-      description: `${productData.name} has been added to your inventory.`,
+  const useFormValues = (product?: Product | null): FormValues => {
+    return formSchema.parse({
+      name: product?.name || "",
+      description: product?.description || "",
+      colorways: product?.colorways || [],
+      quantity: product?.quantity || 0,
+      price: product?.price || 0,
+      images: product?.images || [],
     });
+  };
+
+  const initialValues = useFormValues(product);
+
+  const handleAddProduct = async (productData: FormValues) => {
+    try {
+      setIsSubmitting(true);
+      await createProduct(productData);
+      toast.success("Product added successfully", {
+        description: `${productData.name} has been added to your inventory.`,
+      });
+      router.push("/admin/product/order/stock");
+    } catch (error: any) {
+      toast.error("Failed to add product", {
+        description: error.message || "An error occurred.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateProduct = async (productData: FormValues) => {
+    try {
+      setIsSubmitting(true);
+      await updateProduct(id, productData);
+      toast.success("Product updated successfully", {
+        description: `${productData.name} has been updated.`,
+      });
+      router.push("/admin/product/order/stock");
+    } catch (error: any) {
+      toast.error("Failed to update product", {
+        description: error.message || "An error occurred.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = (values: FormValues) =>  {
+    if (isNew) {
+      handleAddProduct(values);
+    } else {
+      handleUpdateProduct(values);
+    }
   };
 
   return (
@@ -70,10 +114,10 @@ function DetailProductContent() {
           <h1 className="text-2xl font-bold">{id ? "Edit Product" : "Add Product"}</h1>
         </div>
           <div className="animate-slide-up">
-            <ProductForm 
-              initialValues={id ? productData : null} 
-              onSubmit={handleAddProduct} 
-            />
+          <ProductForm 
+            initialValues={initialValues} 
+            onSubmit={handleSubmit} 
+            isSubmitting={isSubmitting} />
           </div>          
       </div>
     </AdminLayout>
