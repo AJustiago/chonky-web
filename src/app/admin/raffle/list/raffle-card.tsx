@@ -30,7 +30,7 @@ const RaffleCard: React.FC<RaffleCardProps> = ({ raffle }) => {
         {raffle.imageUrl && (
           <div className="relative h-40 overflow-hidden">
             <Image
-              src={raffle.imageUrl ? raffle.imageUrl : "/placeholder.svg"} 
+              src={raffle.imageUrl}
               alt={raffle.title}
               layout="fill"
               objectFit="cover"
