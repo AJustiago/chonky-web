@@ -13,6 +13,7 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 1,
     status: "ongoing",
     participants: 342,
+    maxParticipants: 500,
     imageUrl: "/placeholder.svg"
   },
   {
@@ -26,6 +27,7 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 2,
     status: "ongoing",
     participants: 567,
+    maxParticipants: 1000,
     imageUrl: "/placeholder.svg"
   },
   {
@@ -39,6 +41,7 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 3,
     status: "finished",
     participants: 879,
+    maxParticipants: 1000,
     imageUrl: "/placeholder.svg"
   },
   {
@@ -52,8 +55,37 @@ const mockRaffles: Raffle[] = [
     numberOfWinners: 1,
     status: "finished",
     participants: 423,
+    maxParticipants: 500,
     imageUrl: "/placeholder.svg"
   },
+  {
+    id: "5",
+    title: "Holiday Travel Sweepstakes",
+    description: "Win a dream vacation to any destination of your choice!",
+    prizeName: "All-Expenses Paid Trip for Two",
+    prizeValue: 5000.00,
+    startDate: "2023-11-01T00:00:00.000Z",
+    endDate: "2023-12-25T23:59:59.999Z",
+    numberOfWinners: 1,
+    status: "upcoming",
+    participants: 0,
+    maxParticipants: 2000,
+    imageUrl: "/placeholder.svg"
+  },
+  {
+    id: "6",
+    title: "Next-Gen VR Experience",
+    description: "Be among the first to try the latest virtual reality technology!",
+    prizeName: "Meta Quest 3 Pro",
+    prizeValue: 799.99,
+    startDate: "2023-10-15T00:00:00.000Z",
+    endDate: "2023-11-30T23:59:59.999Z",
+    numberOfWinners: 3,
+    status: "upcoming",
+    participants: 0,
+    maxParticipants: 750,
+    imageUrl: "/placeholder.svg"
+  }
 ];
 
 // Mock participants data
@@ -102,13 +134,13 @@ const mockParticipants: RaffleParticipant[] = [
 
 // In-memory store for raffle data (this would be replaced with API calls in a real app)
 let raffles = [...mockRaffles];
-// let participants = [...mockParticipants];
+let participants = [...mockParticipants];
 
 export const getRaffles = async (): Promise<Raffle[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(raffles);
-    }, 500);
+    }, 500); // Simulate network delay
   });
 };
 
@@ -153,19 +185,19 @@ export const deleteRaffle = async (id: string): Promise<boolean> => {
   });
 };
 
-// export const getRaffleParticipants = async (raffleId: string): Promise<RaffleParticipant[]> => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       const filteredParticipants = participants.filter(p => p.raffleId === raffleId);
-//       resolve(filteredParticipants);
-//     }, 500);
-//   });
-// };
+export const getRaffleParticipants = async (raffleId: string): Promise<RaffleParticipant[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const filteredParticipants = participants.filter(p => p.raffleId === raffleId);
+      resolve(filteredParticipants);
+    }, 500);
+  });
+};
 
-// export const getAllRaffleParticipants = async (): Promise<RaffleParticipant[]> => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve(participants);
-//     }, 500);
-//   });
-// };
+export const getAllRaffleParticipants = async (): Promise<RaffleParticipant[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(participants);
+    }, 500);
+  });
+};

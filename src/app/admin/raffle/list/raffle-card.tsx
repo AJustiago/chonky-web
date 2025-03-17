@@ -1,10 +1,12 @@
+"use client"
+
 import React from "react";
 import Link from "next/link";
 import { Raffle } from "@/types/raffle";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Users, Award } from "lucide-react";
-import Image from "next/image";
+import { Calendar, Users, Award, Clock } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 interface RaffleCardProps {
   raffle: Raffle;
@@ -20,29 +22,56 @@ const RaffleCard: React.FC<RaffleCardProps> = ({ raffle }) => {
     });
   };
 
-  const statusColor = raffle.status === "ongoing" 
-    ? "bg-raffle-green text-green-700" 
-    : "bg-raffle-yellow text-yellow-700";
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "upcoming":
+        return "bg-raffle-yellow text-yellow-700";
+      case "ongoing":
+        return "bg-raffle-green text-green-700";
+      case "finished":
+        return "bg-gray-200 text-gray-700";
+      default:
+        return "bg-gray-200 text-gray-700";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "upcoming":
+        return <Clock className="w-3 h-3 mr-1" />;
+      case "ongoing":
+        return null;
+      case "finished":
+        return null;
+      default:
+        return null;
+    }
+  };
+
+  // Calculate percentage of participation
+  const participationPercentage = 
+    raffle.participants && raffle.maxParticipants
+      ? Math.min(100, Math.round((raffle.participants / raffle.maxParticipants) * 100))
+      : 0;
 
   return (
-    <Link href={`/raffle/${raffle.id}`}>
+    <Link href={`/admin/raffle/list/detail?id=${raffle.id}`}>
       <Card className="h-full overflow-hidden transition-all hover:shadow-md">
         {raffle.imageUrl && (
           <div className="relative h-40 overflow-hidden">
-            <Image
-              src={raffle.imageUrl ? raffle.imageUrl : "/placeholder.svg"} 
+            <img
+              src={raffle.imageUrl}
               alt={raffle.title}
-              layout="fill"
-              objectFit="cover"
-              className="w-full h-full"
+              className="w-full h-full object-cover"
             />
           </div>
         )}
         <CardContent className="p-5">
           <div className="flex justify-between items-start mb-3">
             <h3 className="text-lg font-semibold line-clamp-1">{raffle.title}</h3>
-            <Badge variant="secondary" className={statusColor}>
-              {raffle.status === "ongoing" ? "Ongoing" : "Finished"}
+            <Badge variant="secondary" className={getStatusColor(raffle.status)}>
+              {getStatusIcon(raffle.status)}
+              {raffle.status.charAt(0).toUpperCase() + raffle.status.slice(1)}
             </Badge>
           </div>
           <p className="text-sm text-gray-500 mb-4 line-clamp-2">
@@ -59,10 +88,25 @@ const RaffleCard: React.FC<RaffleCardProps> = ({ raffle }) => {
                 {formatDate(raffle.startDate)} - {formatDate(raffle.endDate)}
               </span>
             </div>
-            {raffle.participants && (
-              <div className="flex items-center text-sm text-gray-500">
-                <Users className="w-4 h-4 mr-2 text-raffle-purple" />
-                <span>{raffle.participants} participants</span>
+            {raffle.participants !== undefined && (
+              <div className="space-y-1">
+                <div className="flex items-center text-sm text-gray-500 justify-between">
+                  <div className="flex items-center">
+                    <Users className="w-4 h-4 mr-2 text-raffle-purple" />
+                    <span>{raffle.participants} participants</span>
+                  </div>
+                  {raffle.maxParticipants && (
+                    <span className="text-xs text-gray-500">
+                      {participationPercentage}% filled
+                    </span>
+                  )}
+                </div>
+                {raffle.maxParticipants && (
+                  <Progress 
+                    value={participationPercentage} 
+                    className="h-2 bg-gray-100" 
+                  />
+                )}
               </div>
             )}
           </div>

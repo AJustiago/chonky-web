@@ -8,8 +8,9 @@ export interface Raffle {
     startDate: string;
     endDate: string;
     numberOfWinners: number;
-    status: 'ongoing' | 'finished';
+    status: 'ongoing' | 'finished' | 'upcoming';
     participants?: number;
+    maxParticipants?: number;
     imageUrl?: string;
   }
   

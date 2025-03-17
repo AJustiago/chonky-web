@@ -25,6 +25,7 @@ const RafflePage: React.FC = () => {
     queryClient.invalidateQueries({ queryKey: ["raffles"] });
   };
 
+  const upcomingRaffles = raffles?.filter((raffle) => raffle.status === "upcoming") || [];
   const ongoingRaffles = raffles?.filter((raffle) => raffle.status === "ongoing") || [];
   const finishedRaffles = raffles?.filter((raffle) => raffle.status === "finished") || [];
 
@@ -53,7 +54,8 @@ const RafflePage: React.FC = () => {
         </div>
 
         <Tabs defaultValue="ongoing" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full sm:w-auto grid-cols-2">
+          <TabsList className="grid w-full sm:w-auto grid-cols-3">
+            <TabsTrigger value="upcoming">Upcoming ({upcomingRaffles.length})</TabsTrigger>
             <TabsTrigger value="ongoing">Ongoing ({ongoingRaffles.length})</TabsTrigger>
             <TabsTrigger value="finished">Finished ({finishedRaffles.length})</TabsTrigger>
           </TabsList>
@@ -69,6 +71,23 @@ const RafflePage: React.FC = () => {
             </div>
           ) : (
             <>
+              <TabsContent value="upcoming" className="pt-4">
+                {upcomingRaffles.length === 0 ? (
+                  <div className="py-10 text-center border rounded-lg">
+                    <p className="text-muted-foreground">No upcoming raffles.</p>
+                    <Link href="/admin/raffle/list/detail" className="mt-4 inline-block">
+                      <Button variant="outline">Create your first raffle</Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {upcomingRaffles.map((raffle: Raffle) => (
+                      <RaffleCard key={raffle.id} raffle={raffle} />
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
               <TabsContent value="ongoing" className="pt-4">
                 {ongoingRaffles.length === 0 ? (
                   <div className="py-10 text-center border rounded-lg">

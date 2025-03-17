@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Product } from "@/types/product";
 import { getProductsById, createProduct, updateProduct } from "@/services/productService";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import '@/styles/embla.css'
 import { z } from "zod";
 
@@ -60,47 +60,58 @@ function DetailProductContent() {
 
   const initialValues = useFormValues(product);
 
-  const handleAddProduct = async (productData: FormValues) => {
-    try {
-      setIsSubmitting(true);
-      await createProduct(productData);
+  const createMutation = useMutation({
+    mutationFn: createProduct,
+    onSuccess: () => {
       toast.success("Product added successfully", {
-        description: `${productData.name} has been added to your inventory.`,
+        description: 'Product has been added to your inventory'
       });
-      router.push("/admin/product/order/stock");
-    } catch (error: any) {
-      toast.error("Failed to add product", {
-        description: error.message || "An error occurred.",
-      });
-    } finally {
-      setIsSubmitting(false);
+      router.push("/admin/product/order/stock")
+    },
+    onError: () => {
+      toast.error("Failed to add Product", {
+        description: 'There was a problem adding product.'
+      })
     }
-  };
+  })
 
-  const handleUpdateProduct = async (productData: FormValues) => {
-    try {
-      setIsSubmitting(true);
-      await updateProduct(id, productData);
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<FormValues> }) => updateProduct(id, data),
+    onSuccess: () => {
       toast.success("Product updated successfully", {
-        description: `${productData.name} has been updated.`,
+        description: `Product has been updated to your inventory `
       });
-      router.push("/admin/product/order/stock");
-    } catch (error: any) {
-      toast.error("Failed to update product", {
-        description: error.message || "An error occurred.",
-      });
+      router.push("/admin/product/order/stock")
+    },
+    onError: () => {
+      toast.error("Failed to update Product", {
+        description: 'There was a problem update thew product.'
+      })
+    }
+  })
+
+  async function onSubmit(values: FormValues) {
+    setIsSubmitting(true);
+
+    try {
+      const formattedValues = {
+        name: values.name,
+        description: values.description,
+        colorways: values.colorways,
+        quantity: values.quantity,
+        price: values.price,
+        images: values.images
+      };
+
+      if (isNew) {
+        await createMutation.mutateAsync(formattedValues);
+      } else if (id) {
+        await updateMutation.mutateAsync({ id, data: formattedValues });
+      }
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleSubmit = (values: FormValues) =>  {
-    if (isNew) {
-      handleAddProduct(values);
-    } else {
-      handleUpdateProduct(values);
-    }
-  };
+  }
 
   return (
     <AdminLayout>
@@ -116,7 +127,7 @@ function DetailProductContent() {
           <div className="animate-slide-up">
           <ProductForm 
             initialValues={initialValues} 
-            onSubmit={handleSubmit} 
+            onSubmit={onSubmit} 
             isSubmitting={isSubmitting} />
           </div>          
       </div>
