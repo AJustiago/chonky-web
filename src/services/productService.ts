@@ -8,7 +8,8 @@ const mockProducts: Product[] = [
         description: "this is an electronics device", 
         images: ["/AA.jpeg"], 
         price: 50000, 
-        quantity: 12, 
+        quantity: 12,
+        onSale: true, 
         functionEnabled: false 
     },
     { 
@@ -19,6 +20,7 @@ const mockProducts: Product[] = [
         images: ["/AA.jpeg","/AA.jpeg","/AA.jpeg","/AA.jpeg"],
         price: 500000, 
         quantity: 10, 
+        onSale: true, 
         functionEnabled: false 
     },
     { 
@@ -29,6 +31,7 @@ const mockProducts: Product[] = [
         images: ["/AA.jpeg"], 
         price: 5000000, 
         quantity: 1, 
+        onSale: true, 
         functionEnabled: false },
     { 
         id: "A004",
@@ -38,6 +41,7 @@ const mockProducts: Product[] = [
         images: ["/AA.jpeg"], 
         price: 5000, 
         quantity: 9, 
+        onSale: true, 
         functionEnabled: false 
     },
 ]

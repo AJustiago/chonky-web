@@ -119,21 +119,7 @@ export const ProductTable = () => {
               variant="outline"
               size="icon"
               onClick={() => {
-                const queryParams = new URLSearchParams({
-                  id: data.id || "",
-                  name: data.name,
-                  colorways: data.colorways
-                    ? data.colorways.join(",")
-                    : "",
-                  description: data.description || "",
-                  images: data.images
-                    ? data.images.join(",")
-                    : "",
-                  price: String(data.price),
-                  quantity: String(data.quantity),
-                }).toString();
-
-                router.push(`/admin/product/stock/detail/?${queryParams}`);
+               router.push(`/admin/product/stock/detail/?id=${data.id}`);
               }}
             >
               <Pencil className="h-4 w-4" />

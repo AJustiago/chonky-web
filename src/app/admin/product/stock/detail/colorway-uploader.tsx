@@ -65,8 +65,7 @@ const ColorwayManager = ({ colorways, setColorways }: ColorwayManagerProps) => {
           {colorways.map((colorway, index) => (
             <div 
               key={index} 
-              className="flex items-center gap-2 p-2 rounded-md bg-muted/50 animate-slide-up"
-              style={{ animationDelay: `${index * 50}ms` }}
+              className="flex items-center gap-2 p-2 rounded-md animate-slide-up"
             >
               <div className="text-sm flex-1">{colorway}</div>
               <Button
