@@ -13,6 +13,8 @@ import { getProductsById, createProduct, updateProduct } from "@/services/produc
 import { useMutation, useQuery } from "@tanstack/react-query";
 import '@/styles/embla.css'
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Product Name must be at least 2 characters."}),
@@ -28,7 +30,9 @@ type FormValues = z.infer<typeof formSchema>;
 export default function DetailProductPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <DetailProductContent />
+      <AdminLayout>
+        <DetailProductContent />
+      </AdminLayout>
     </Suspense>
   );
 }
@@ -36,7 +40,8 @@ export default function DetailProductPage() {
 function DetailProductContent() {
   const router = useRouter();
 
-  const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");  
 
   const isNew = !id || id === "new";
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,18 +52,17 @@ function DetailProductContent() {
     enabled: !isNew,
   });
 
-  const useFormValues = (product?: Product | null): FormValues => {
-    return formSchema.parse({
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       name: product?.name || "",
       description: product?.description || "",
       colorways: product?.colorways || [],
       quantity: product?.quantity || 0,
       price: product?.price || 0,
       images: product?.images || [],
-    });
-  };
-
-  const initialValues = useFormValues(product);
+    }
+  });
 
   const createMutation = useMutation({
     mutationFn: createProduct,
@@ -114,7 +118,6 @@ function DetailProductContent() {
   }
 
   return (
-    <AdminLayout>
       <div className="container">
         <MyBreadcrumbs user={"Admin"} menu={["Product Stock", id ? "Edit Product" : "Add Product"]} link={["/admin/product/stock"]}/>
         <div className="flex items-center my-6 space-x-4">
@@ -126,11 +129,10 @@ function DetailProductContent() {
         </div>
           <div className="animate-slide-up">
           <ProductForm 
-            initialValues={initialValues} 
+            initialValues={form.getValues()} 
             onSubmit={onSubmit} 
             isSubmitting={isSubmitting} />
           </div>          
       </div>
-    </AdminLayout>
   );
 }
