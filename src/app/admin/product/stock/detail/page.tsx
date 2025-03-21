@@ -28,6 +28,7 @@ import ColorwayManager from './colorway-uploader';
 import DialogPreview from "./dialog-product";
 import { Eye } from 'lucide-react';
 import Editor from "@/components/ui/rich-text/editor"
+import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Product Name must be at least 2 characters."}),
@@ -70,6 +71,7 @@ function DetailProductContent() {
     images: [],
     price: 0,
     quantity: 1,
+    onSale: true,
     functionEnabled: false,
   });
 
@@ -106,8 +108,6 @@ function DetailProductContent() {
     }
   }, [product, form]);
 
-  
-  console.log(form.getValues())
 
   const handlePreview = () => {
     setPreviewData({
@@ -117,6 +117,7 @@ function DetailProductContent() {
       images: form.getValues('images'),
       price: form.getValues('price'),
       quantity: form.getValues('quantity'),
+      onSale: form.getValues('onSale') === 'true',
       functionEnabled: false,
     });
     setIsPreviewOpen(true);
@@ -128,7 +129,6 @@ function DetailProductContent() {
       toast.success("Product added successfully", {
         description: 'Product has been added to your inventory'
       });
-      router.push("/admin/product/order/stock")
     },
     onError: () => {
       toast.error("Failed to add Product", {
@@ -143,7 +143,6 @@ function DetailProductContent() {
       toast.success("Product updated successfully", {
         description: `Product has been updated to your inventory `
       });
-      router.push("/admin/product/order/stock")
     },
     onError: () => {
       toast.error("Failed to update Product", {
@@ -151,6 +150,9 @@ function DetailProductContent() {
       })
     }
   })
+
+  const updateImages = (images: string[]) => form.setValue("images", images);
+  const updateColorways = (colorways: string[]) => form.setValue("colorways", colorways);
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -197,7 +199,7 @@ function DetailProductContent() {
                   <CardContent className="space-y-6">
                     <div className="space-y-2">
                       <Label htmlFor="product-images">Product Images</Label>
-                      <ImageUploader images={form.watch("images")} setImages={(images) => form.setValue("images", images)} maxImages={5} />
+                      <ImageUploader images={form.watch("images")} setImages={updateImages} maxImages={5} />
                     </div>
                     <FormField
                       control={form.control}
@@ -214,12 +216,21 @@ function DetailProductContent() {
                     />
                     <div className="space-y-2">
                       <Label htmlFor="product-colorways">Product Colorways</Label>
-                      <ColorwayManager colorways={form.watch("colorways")} setColorways={(colorways) => form.setValue("colorways", colorways)} />
+                      <ColorwayManager colorways={form.watch("colorways")} setColorways={updateColorways} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="product-colorways">Product Description</Label>
                       <Editor content={value} onChange={setValue} placeholder="Write your post here..." />
                     </div>
+
+                    <FormField control={form.control} name="onSale" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>On Sale</FormLabel>
+                        <FormControl>
+                          <Switch checked={field.value === 'true'} onCheckedChange={(checked) => field.onChange(checked ? 'true' : 'false')} />
+                        </FormControl>
+                      </FormItem>
+                    )} />
                   </CardContent>
                   <CardFooter className="flex justify-end gap-2">
                     <Button variant="outline" type="button" onClick={handlePreview}><Eye className="w-4 h-4 mr-2" />Preview</Button>

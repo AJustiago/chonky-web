@@ -10,7 +10,6 @@ interface ImageUploaderProps {
 }
 
 const ImageUploader = ({ images, setImages, maxImages = 5 }: ImageUploaderProps) => {
-  console.log(images);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -117,6 +116,7 @@ const ImageUploader = ({ images, setImages, maxImages = 5 }: ImageUploaderProps)
             size="sm" 
             onClick={() => fileInputRef.current?.click()}
             className="mt-2"
+            type='button'
           >
             <ImagePlus className="w-4 h-4 mr-2" />
             Select Images
@@ -142,6 +142,7 @@ const ImageUploader = ({ images, setImages, maxImages = 5 }: ImageUploaderProps)
                 onClick={() => removeImage(index)}
                 className="absolute top-2 right-2 p-1 bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-background"
                 aria-label="Remove image"
+                type='button'
               >
                 <X className="w-4 h-4 text-foreground" />
               </button>

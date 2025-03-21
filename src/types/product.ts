@@ -6,6 +6,6 @@ export interface Product {
   images: string[];
   price: number;
   quantity: number;
-  onSale?: boolean;
+  onSale: boolean;
   functionEnabled?: boolean;
 }

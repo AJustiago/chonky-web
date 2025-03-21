@@ -21,9 +21,7 @@ export const ProductTable = () => {
   };
 
   const confirmDelete = () => {
-    console.log(deleteId);
     if (deleteId !== null) {
-      console.log("Deleted item with ID:", deleteId);
       toast("Delete Success", {
         description: "Product Data Has Been Deleted",
       });
@@ -112,7 +110,6 @@ export const ProductTable = () => {
       header: "Actions",
       cell: ({ row }) => {
         const data = row.original;
-        console.log(data.images)
         return (
           <div className="flex items-center gap-2">
             <Button

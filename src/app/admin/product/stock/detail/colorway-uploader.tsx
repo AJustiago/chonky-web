@@ -55,6 +55,7 @@ const ColorwayManager = ({ colorways, setColorways }: ColorwayManagerProps) => {
           variant="outline" 
           size="icon"
           className="shrink-0"
+          type="button"
         >
           <Plus className="h-4 w-4" />
         </Button>
@@ -73,6 +74,7 @@ const ColorwayManager = ({ colorways, setColorways }: ColorwayManagerProps) => {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                type="button"
               >
                 <Trash className="h-4 w-4" />
               </Button>
