@@ -21,25 +21,35 @@ const sidebarItems: SidebarItems = {
         href: "/admin",
         icon: LayoutDashboardIcon
     },
-    {
-        label: "Product Order",
-        href: "/admin/product/order",
-        icon: ShoppingCartIcon
+    { 
+        label: "Product",
+        href: "",
+        icon: BoxesIcon,
+        submenus: [
+          {
+            href: "/admin/product/stock",
+            label: "Product List",
+          },
+          {
+            href: "/admin/product/order",
+            label: "Prodect Order",
+          },
+        ]
     },
     {
-        label: "Raffle Order",
-        href: "/admin/raffle/order",
-        icon: TicketPercentIcon
-    },
-    {
-        label: "Product Stock",
-        href: "/admin/product/stock",
-        icon: BoxesIcon
-    },
-    {
-        label: "Raffle List",
-        href: "/admin/raffle/list",
-        icon: ListIcon
+        label: "Raffle",
+        href: "",
+        icon: TicketPercentIcon,
+        submenus: [
+          {
+            href: "/admin/raffle/list",
+            label: "Raffle List",
+          },
+          {
+            href: "/admin/raffle/order",
+            label: "Raffle Order",
+          },
+        ]
     },
     {
         label: "Admin Settings",
@@ -50,13 +60,13 @@ const sidebarItems: SidebarItems = {
 };
 
 export default function Sidebar() {
-  const isDesktop = useMediaQuery("(min-width: 640px)", {
-    initializeWithValue: false,
-  });
+  // const isDesktop = useMediaQuery("(min-width: 640px)", {
+  //   initializeWithValue: false,
+  // });
 
-  if (isDesktop) {
+  // if (isDesktop) {
     return <SidebarDesktop sidebarItems={sidebarItems} />;
-  }
+  // }
 
-  return <SidebarMobile sidebarItems={sidebarItems} />;
+  // return <SidebarMobile sidebarItems={sidebarItems} />;
 }

@@ -6,6 +6,11 @@ export interface SidebarItems {
     label: string;
     href: string;
     icon?: LucideIcon;
+    submenus?: Array<{
+      href: string;
+      label: string;
+    }>
+  extras?: ReactNode;
   }>;
   extras?: ReactNode;
 }

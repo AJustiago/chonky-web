@@ -38,6 +38,7 @@ const ProductForm = ({ initialValues, onSubmit }: ProductFormProps) => {
     images: [],
     price: 0,
     quantity: 1,
+    onSale: false,
     functionEnabled: false,
   });
 
@@ -60,6 +61,7 @@ const ProductForm = ({ initialValues, onSubmit }: ProductFormProps) => {
       images,
       price,
       quantity,
+      onSale: false,
       functionEnabled: false,
     });
     setIsPreviewOpen(true);
@@ -77,6 +79,8 @@ const ProductForm = ({ initialValues, onSubmit }: ProductFormProps) => {
       quantity,
       price,
       images,
+      onSale: false,
+      functionEnabled: false,
     };
     try {
       onSubmit?.(productData);
