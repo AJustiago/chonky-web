@@ -1,22 +1,35 @@
-import fs from 'fs';
-import path from 'path';
-
 /**
- * Function to save Base64 string as an image and return the file path
+ * Function to convert Base64 string to Blob and trigger download
  * @param base64String - The Base64 string of the image
  * @param fileName - The desired file name
- * @returns The saved file path
+ * @returns string - The relative path of the downloaded file
  */
-export const saveBase64ImageToFile = (base64String: string, fileName: string): string => {
+export const Base64Image = (base64String: string, fileName: string): string => {
     const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
-    const buffer = Buffer.from(base64Data, 'base64');
+    const contentType = base64String.match(/^data:(image\/\w+);base64/)?.[1] || 'image/png';
 
-    const uploadDir = path.join(process.cwd(), 'public', 'products');
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
 
-    const filePath = path.join(uploadDir, fileName);
-    fs.writeFileSync(filePath, buffer);
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: contentType });
+   
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    
+    link.download = fileName;
+
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    
     return `/products/${fileName}`;
 };

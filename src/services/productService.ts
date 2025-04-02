@@ -1,5 +1,5 @@
 import { Product } from "@/types/product";
-import { saveBase64ImageToFile } from "@/utils/imageUploader";
+import { Base64Image } from "@/utils/imageUploader";
 
 const mockProducts: Product[] = [
     { 
@@ -66,13 +66,14 @@ export const getProductsById = async (id: string): Promise<Product | undefined> 
     });
 };
 
-
 export const createProduct = async (product: Omit<Product, 'id'>): Promise<Product> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             const updatedImages = product.images.map((image, idx) => {
                 const fileName = `${product.name.replace(/\s+/g, "_")}_${idx}.jpeg`;
-                return saveBase64ImageToFile(image, fileName); 
+                // Base64Image now triggers download, we'll return the intended path
+                Base64Image(image, fileName);
+                return `/products/${fileName}`; // Return the relative path
             });
 
             const newProduct = {
@@ -86,19 +87,22 @@ export const createProduct = async (product: Omit<Product, 'id'>): Promise<Produ
     });
 };
 
-
 export const updateProduct = async (id: string, product: Partial<Product>): Promise<Product | undefined> => {
     return new Promise((resolve) => {
         setTimeout(() => {
+            let updatedImages: string[] | undefined;
             if (product.images) {
-                const updatedImages = product.images.map((image, idx) => {
+                updatedImages = product.images.map((image, idx) => {
                     const fileName = `${product.name?.replace(/\s+/g, "_") || "product"}_${idx}.jpeg`;
-                    return saveBase64ImageToFile(image, fileName); 
+                    // Base64Image triggers download, we'll return the intended path
+                    Base64Image(image, fileName);
+                    return `/products/${fileName}`; // Return the relative path
                 });
-                product.images = updatedImages;
             }
 
-            products = products.map((r) => r.id === id ? { ...r, ...product } : r);
+            products = products.map((r) => 
+                r.id === id ? { ...r, ...product, ...(updatedImages && { images: updatedImages }) } : r
+            );
             const updatedProduct = products.find(r => r.id === id);
             resolve(updatedProduct);
         }, 500);
