@@ -1,72 +1,67 @@
 "use client";
 
 import AdminLayout from "@/components/admin/adminLayout";
-import React, { useState, Suspense, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import MyBreadcrumbs from "@/components/admin/breadcrumbs";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Product } from "@/types/product";
 import { getProductsById, createProduct, updateProduct } from "@/services/productService";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import '@/styles/embla.css'
+import "@/styles/embla.css";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import ImageUploader from '@/components/admin/image-uploader';
-import ColorwayManager from './colorway-uploader';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import ImageUploader from "@/components/admin/image-uploader";
+import ColorwayManager from "./colorway-uploader";
 import DialogPreview from "./dialog-product";
-import { Eye } from 'lucide-react';
-import Editor from "@/components/ui/rich-text/editor"
+import { Eye } from "lucide-react";
+import Editor from "@/components/admin/editor";
 import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Product Name must be at least 2 characters."}),
-  description: z.string().min(10, { message: "Product Description must be at least 10 characters."}),
-  colorways: z.array(z.string()).min(1, { message: "Product Colorway must be at least 1."}),
-  quantity: z.coerce.number().int().positive({ message: "Product Quantity must be positive."}),
-  price: z.coerce.number().int().positive({message : "Product Price must be postive."}),
-  images: z.array(z.string()).min(1, {message: "Product Image must be at least 1."})
-})
+  name: z.string().min(2, { message: "Product Name must be at least 2 characters." }),
+  description: z.string().min(10, { message: "Product Description must be at least 10 characters." }),
+  colorways: z.array(z.string()).min(1, { message: "Product Colorway must be at least 1." }),
+  quantity: z.coerce.number().int().positive({ message: "Product Quantity must be positive." }),
+  price: z.coerce.number().int().positive({ message: "Product Price must be positive." }),
+  images: z.array(z.string()).min(1, { message: "Product Image must be at least 1." }),
+  onSale: z.boolean(),
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
 export default function DetailProductPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AdminLayout>
-        <DetailProductContent />
-      </AdminLayout>
-    </Suspense>
+    <AdminLayout>
+      <DetailProductContent />
+    </AdminLayout>
   );
 }
 
 function DetailProductContent() {
   const router = useRouter();
-
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");  
-
-  const [value, setValue] = useState("hello world ")
-  
+  const id = searchParams.get("id");
   const isNew = !id || id === "new";
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [previewData, setPreviewData] = useState<Product & { functionEnabled: boolean }>({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     colorways: [],
     images: [],
     price: 0,
@@ -81,7 +76,6 @@ function DetailProductContent() {
     enabled: !isNew,
   });
 
-  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -91,11 +85,14 @@ function DetailProductContent() {
       quantity: 0,
       price: 0,
       images: [],
-    }
+      onSale: true,
+    },
   });
 
+  const [valueEditor, setValueEditor] = useState("");
+
   useEffect(() => {
-    if (product) {
+    if (product && !isNew) {
       form.reset({
         name: product.name || "",
         description: product.description || "",
@@ -103,70 +100,71 @@ function DetailProductContent() {
         quantity: product.quantity || 0,
         price: product.price || 0,
         images: product.images || [],
+        onSale: product.onSale ?? true,
       });
-      setValue(product.description || "");
+      setValueEditor(product.description || ""); 
     }
-  }, [product, form]);
-
+  }, [product, form, isNew]);
+  
+  useEffect(() => {
+    console.log("Value Editor Updated:", valueEditor);
+  }, [valueEditor]);
 
   const handlePreview = () => {
     setPreviewData({
-      name: form.getValues('name'),
-      description: form.getValues('description'),
-      colorways: form.getValues('colorways'),
-      images: form.getValues('images'),
-      price: form.getValues('price'),
-      quantity: form.getValues('quantity'),
-      onSale: form.getValues('onSale') === 'true',
+      name: form.getValues("name"),
+      description: valueEditor,
+      colorways: form.getValues("colorways"),
+      images: form.getValues("images"),
+      price: form.getValues("price"),
+      quantity: form.getValues("quantity"),
+      onSale: form.getValues("onSale"),
       functionEnabled: false,
     });
     setIsPreviewOpen(true);
   };
-  
+
   const createMutation = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
       toast.success("Product added successfully", {
-        description: 'Product has been added to your inventory'
+        description: "Product has been added to your inventory",
       });
+      router.push("/admin/product/stock");
     },
     onError: () => {
       toast.error("Failed to add Product", {
-        description: 'There was a problem adding product.'
-      })
-    }
-  })
+        description: "There was a problem adding product.",
+      });
+    },
+  });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<FormValues> }) => updateProduct(id, data),
     onSuccess: () => {
       toast.success("Product updated successfully", {
-        description: `Product has been updated to your inventory `
+        description: "Product has been updated to your inventory",
       });
+      router.push("/admin/product/stock");
     },
     onError: () => {
       toast.error("Failed to update Product", {
-        description: 'There was a problem update thew product.'
-      })
-    }
-  })
+        description: "There was a problem updating the product.",
+      });
+    },
+  });
 
   const updateImages = (images: string[]) => form.setValue("images", images);
   const updateColorways = (colorways: string[]) => form.setValue("colorways", colorways);
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-
     try {
       const formattedValues = {
-        name: values.name,
-        description: values.description,
-        colorways: values.colorways,
-        quantity: values.quantity,
-        price: values.price,
-        images: values.images
+        ...values,
+        description: valueEditor,
       };
-
+      console.log("Form values with editor content:", formattedValues);
       if (isNew) {
         await createMutation.mutateAsync(formattedValues);
       } else if (id) {
@@ -177,70 +175,116 @@ function DetailProductContent() {
     }
   }
 
-  return (
-      <div className="container">
-        <MyBreadcrumbs user={"Admin"} menu={["Product Stock", id ? "Edit Product" : "Add Product"]} link={["/admin/product/stock"]}/>
-        <div className="flex items-center my-6 space-x-4">
-          <Button variant="outline" onClick={() => router.back()}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            <span className="mt-0.5">Back</span>
-          </Button>
-          <h1 className="text-2xl font-bold">{id ? "Edit Product" : "Add Product"}</h1>
-        </div>
-          <div className="animate-slide-up">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-4xl">
-                <Card className="border border-border/40 bg-card/80 backdrop-blur-sm shadow-sm">
-                  <CardHeader>
-                    <CardDescription>
-                      Fill in the details below to add a new product to your inventory
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="product-images">Product Images</Label>
-                      <ImageUploader images={form.watch("images")} setImages={updateImages} maxImages={5} />
-                    </div>
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Product Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter product name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="space-y-2">
-                      <Label htmlFor="product-colorways">Product Colorways</Label>
-                      <ColorwayManager colorways={form.watch("colorways")} setColorways={updateColorways} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="product-colorways">Product Description</Label>
-                      <Editor content={value} onChange={setValue} placeholder="Write your post here..." />
-                    </div>
-
-                    <FormField control={form.control} name="onSale" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>On Sale</FormLabel>
-                        <FormControl>
-                          <Switch checked={field.value === 'true'} onCheckedChange={(checked) => field.onChange(checked ? 'true' : 'false')} />
-                        </FormControl>
-                      </FormItem>
-                    )} />
-                  </CardContent>
-                  <CardFooter className="flex justify-end gap-2">
-                    <Button variant="outline" type="button" onClick={handlePreview}><Eye className="w-4 h-4 mr-2" />Preview</Button>
-                    <DialogPreview isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} data={previewData} />
-                    <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Adding...' : 'Add Product'}</Button>
-                  </CardFooter>
-                </Card>
-              </form>
-            </Form>
-          </div>          
+  if (!isNew && isLoading) {
+    return (
+      <div className="container flex items-center justify-center h-screen">
+        <div>Loading product details...</div>
       </div>
+    );
+  }
+
+  return (
+    <div className="container">
+      <MyBreadcrumbs
+        user={"Admin"}
+        menu={["Product Stock", id && !isNew ? "Edit Product" : "Add Product"]}
+        link={["/admin/product/stock"]}
+      />
+      <div className="flex items-center my-6 space-x-4">
+        <Button variant="outline" onClick={() => router.back()}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          <span className="mt-0.5">Back</span>
+        </Button>
+        <h1 className="text-2xl font-bold">{id && !isNew ? "Edit Product" : "Add Product"}</h1>
+      </div>
+      <div className="animate-slide-up">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-4xl">
+            <Card className="border border-border/40 bg-card/80 backdrop-blur-sm shadow-sm">
+              <CardHeader>
+                <CardDescription>
+                  Fill in the details below to {isNew ? "add a new" : "edit an existing"} product in your inventory
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="product-images">Product Images</Label>
+                  <ImageUploader images={form.watch("images")} setImages={updateImages} maxImages={5} />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Product Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter product name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="space-y-2">
+                  <Label htmlFor="product-colorways">Product Colorways</Label>
+                  <ColorwayManager colorways={form.watch("colorways")} setColorways={updateColorways} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="product-description">Product Description</Label>
+                  <Editor
+                    content={product?.description || ""}
+                    onChange={(newValue) => {
+                      setValueEditor(newValue);
+                      form.setValue("description", newValue);
+                    }}
+                    placeholder="Write your post here..."
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <input type="hidden" {...field} value={valueEditor} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="onSale"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>On Sale</FormLabel>
+                      <FormControl>
+                        <Switch
+                          className="mx-2"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+              <CardFooter className="flex justify-end gap-2">
+                <Button variant="outline" type="button" onClick={handlePreview}>
+                  <Eye className="w-4 h-4 mr-2" />Preview
+                </Button>
+                <DialogPreview
+                  isOpen={isPreviewOpen}
+                  onClose={() => setIsPreviewOpen(false)}
+                  data={previewData}
+                />
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (isNew ? "Adding..." : "Updating...") : (isNew ? "Add Product" : "Update Product")}
+                </Button>
+              </CardFooter>
+            </Card>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 }

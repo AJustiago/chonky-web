@@ -13,7 +13,6 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: content,
-    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())
     },
@@ -22,7 +21,7 @@ const Editor = ({ content, placeholder, onChange }: EditorProps) => {
   if (!editor) return <></>
 
   return (
-    <div className="prose max-w-none w-full border border-input">
+    <div className="prose max-w-none w-full border border-input bg-background dark:prose-invert">
       <EditorToolbar editor={editor} />
       <div className="editor">
         <EditorContent editor={editor} placeholder={placeholder} />

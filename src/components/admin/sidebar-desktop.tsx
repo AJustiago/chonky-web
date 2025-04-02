@@ -1,11 +1,10 @@
 "use client";
 
 import React from "react";
-import { SidebarButton } from "./sidebar-button";
 import { SidebarItems } from "../../../types";
 import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -15,8 +14,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarGroup,
   SidebarMenuSubButton,
 } from "../ui/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
@@ -27,7 +24,6 @@ interface SidebarDesktopProps {
 }
 
 export function SidebarDesktop({ sidebarItems }: SidebarDesktopProps) {
-  const pathname = usePathname();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -56,18 +52,20 @@ export function SidebarDesktop({ sidebarItems }: SidebarDesktopProps) {
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <SidebarMenuSub key={item.label}>
+                    <SidebarMenuSub>
                       {item.submenus.map((subItem) => (
-                        <Link href={subItem.href}>
-                          <SidebarMenuSubButton key={subItem.label}>{subItem.label}</SidebarMenuSubButton>
-                        </Link>
+                        <SidebarMenuSubButton asChild key={subItem.label}>
+                          <Link href={subItem.href}  key={subItem.label}>
+                            {subItem.label}
+                          </Link>
+                        </SidebarMenuSubButton>
                       ))}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </Collapsible>
               ) : (
                 <SidebarMenuButton>
-                  <Link href={item.href} className="flex items-center gap-2">
+                  <Link href={item.href} className="flex items-center gap-2" key={item.label}>
                     {item.icon && React.createElement(item.icon, { size: 16 })} {item.label}
                   </Link>
                 </SidebarMenuButton>

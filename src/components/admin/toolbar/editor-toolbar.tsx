@@ -54,7 +54,7 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
           <Strikethrough className="h-4 w-4" />
         </Toggle>
 
-        <Toggle
+        {/* <Toggle
           size="sm"
           className="mr-1"
           onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
@@ -84,7 +84,7 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
           onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
           pressed={editor.isActive("blockquote")}>
           <Quote className="h-4 w-4" />
-        </Toggle>
+        </Toggle> */}
 
         <Toggle
           size="sm"
@@ -93,7 +93,7 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
           <Minus className="h-4 w-4" />
         </Toggle>
 
-        <FormatType editor={editor} />
+        {/* <FormatType editor={editor} /> */}
       </ToggleGroup>
 
       <ToggleGroup className="flex flex-row items-center invisible sm:visible" type="multiple">

@@ -2,17 +2,13 @@
 
 import {
   LayoutDashboardIcon,
-  ShoppingCartIcon,
   TicketPercentIcon,
   BoxesIcon,
-  ListIcon,
   UsersIcon,
 } from "lucide-react";
 
 import { SidebarDesktop } from "./sidebar-desktop";
 import { SidebarItems } from "../../../types";
-import { useMediaQuery } from "usehooks-ts";
-import { SidebarMobile } from "./sidebar-mobile";
 
 const sidebarItems: SidebarItems = {
   links: [
@@ -32,7 +28,7 @@ const sidebarItems: SidebarItems = {
           },
           {
             href: "/admin/product/order",
-            label: "Prodect Order",
+            label: "Product Order",
           },
         ]
     },
@@ -60,13 +56,6 @@ const sidebarItems: SidebarItems = {
 };
 
 export default function Sidebar() {
-  // const isDesktop = useMediaQuery("(min-width: 640px)", {
-  //   initializeWithValue: false,
-  // });
-
-  // if (isDesktop) {
     return <SidebarDesktop sidebarItems={sidebarItems} />;
-  // }
 
-  // return <SidebarMobile sidebarItems={sidebarItems} />;
 }
