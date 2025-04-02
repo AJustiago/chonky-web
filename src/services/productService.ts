@@ -1,4 +1,5 @@
 import { Product } from "@/types/product";
+import { saveBase64ImageToFile } from "@/utils/imageUploader";
 
 const mockProducts: Product[] = [
     { 
@@ -7,7 +8,7 @@ const mockProducts: Product[] = [
         colorways: ["blue", "black", "purple"], 
         description: "<p>this is an electronics device</p>", 
         images: ["/AA.jpeg"], 
-        price: 50000, 
+        price: 50, 
         quantity: 12,
         onSale: true, 
         functionEnabled: false 
@@ -18,7 +19,7 @@ const mockProducts: Product[] = [
         colorways: ["midnight", "sand", "sky"], 
         description: "<p>this is an electronics device<p>", 
         images: ["/AA.jpeg","/AA.jpeg","/AA.jpeg","/AA.jpeg"],
-        price: 500000, 
+        price: 500, 
         quantity: 10, 
         onSale: false, 
         functionEnabled: false 
@@ -29,7 +30,7 @@ const mockProducts: Product[] = [
         colorways: ["white", "ash", "dust"], 
         description: "<p>this is an electronics device</p>", 
         images: ["/AA.jpeg"], 
-        price: 5000000, 
+        price: 5000, 
         quantity: 1, 
         onSale: true, 
         functionEnabled: false },
@@ -39,7 +40,7 @@ const mockProducts: Product[] = [
         colorways: ["grey", "red", "pink"], 
         description: "<p>this is an electronics device</p>", 
         images: ["/AA.jpeg"], 
-        price: 5000, 
+        price: 5, 
         quantity: 9, 
         onSale: false, 
         functionEnabled: false 
@@ -69,8 +70,14 @@ export const getProductsById = async (id: string): Promise<Product | undefined> 
 export const createProduct = async (product: Omit<Product, 'id'>): Promise<Product> => {
     return new Promise((resolve) => {
         setTimeout(() => {
+            const updatedImages = product.images.map((image, idx) => {
+                const fileName = `${product.name.replace(/\s+/g, "_")}_${idx}.jpeg`;
+                return saveBase64ImageToFile(image, fileName); 
+            });
+
             const newProduct = {
                 ...product,
+                images: updatedImages,
                 id: Date.now().toString(),
             };
             products = [...products, newProduct];
@@ -79,11 +86,20 @@ export const createProduct = async (product: Omit<Product, 'id'>): Promise<Produ
     });
 };
 
+
 export const updateProduct = async (id: string, product: Partial<Product>): Promise<Product | undefined> => {
     return new Promise((resolve) => {
-        setTimeout(()=> {
-        products = products.map(r => r.id ? { ...r, ...product }: r);
-        const updatedProduct = products.find(r => r.id === id);
+        setTimeout(() => {
+            if (product.images) {
+                const updatedImages = product.images.map((image, idx) => {
+                    const fileName = `${product.name?.replace(/\s+/g, "_") || "product"}_${idx}.jpeg`;
+                    return saveBase64ImageToFile(image, fileName); 
+                });
+                product.images = updatedImages;
+            }
+
+            products = products.map((r) => r.id === id ? { ...r, ...product } : r);
+            const updatedProduct = products.find(r => r.id === id);
             resolve(updatedProduct);
         }, 500);
     });

@@ -65,7 +65,7 @@ function DetailProductContent() {
     colorways: [],
     images: [],
     price: 0,
-    quantity: 1,
+    quantity: 0,
     onSale: true,
     functionEnabled: false,
   });
@@ -92,7 +92,7 @@ function DetailProductContent() {
   const [valueEditor, setValueEditor] = useState("");
 
   useEffect(() => {
-    if (product && !isNew) {
+    if (product && id && id !== "new") { 
       form.reset({
         name: product.name || "",
         description: product.description || "",
@@ -104,11 +104,7 @@ function DetailProductContent() {
       });
       setValueEditor(product.description || ""); 
     }
-  }, [product, form, isNew]);
-  
-  useEffect(() => {
-    console.log("Value Editor Updated:", valueEditor);
-  }, [valueEditor]);
+  }, [product, form, id]);
 
   const handlePreview = () => {
     setPreviewData({
@@ -130,7 +126,7 @@ function DetailProductContent() {
       toast.success("Product added successfully", {
         description: "Product has been added to your inventory",
       });
-      router.push("/admin/product/stock");
+      // router.push("/admin/product/stock");
     },
     onError: () => {
       toast.error("Failed to add Product", {
@@ -145,7 +141,7 @@ function DetailProductContent() {
       toast.success("Product updated successfully", {
         description: "Product has been updated to your inventory",
       });
-      router.push("/admin/product/stock");
+      // router.push("/admin/product/stock");
     },
     onError: () => {
       toast.error("Failed to update Product", {
@@ -157,23 +153,30 @@ function DetailProductContent() {
   const updateImages = (images: string[]) => form.setValue("images", images);
   const updateColorways = (colorways: string[]) => form.setValue("colorways", colorways);
 
-  async function onSubmit(values: FormValues) {
+  const onSubmit = async (values: FormValues) => {
+    console.log("Trying to submit", values);
+    const isValid = await form.trigger();
+    if (!isValid) {
+      console.log("Validation failed");
+      return;
+    }
+  
     setIsSubmitting(true);
     try {
-      const formattedValues = {
-        ...values,
-        description: valueEditor,
-      };
-      console.log("Form values with editor content:", formattedValues);
+      const formattedValues = { ...values, description: valueEditor };
       if (isNew) {
+        console.log("Creating product...");
         await createMutation.mutateAsync(formattedValues);
       } else if (id) {
+        console.log("Updating product...");
         await updateMutation.mutateAsync({ id, data: formattedValues });
       }
+    } catch (error) {
+      console.error("Error submitting form:", error);
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   if (!isNew && isLoading) {
     return (
@@ -199,7 +202,10 @@ function DetailProductContent() {
       </div>
       <div className="animate-slide-up">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="max-w-4xl">
+           <form onSubmit={(e) => {
+              console.log("Form Submitted!");
+              form.handleSubmit(onSubmit)(e);
+            }} className="max-w-4xl" method="POST">
             <Card className="border border-border/40 bg-card/80 backdrop-blur-sm shadow-sm">
               <CardHeader>
                 <CardDescription>
@@ -207,10 +213,19 @@ function DetailProductContent() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="product-images">Product Images</Label>
-                  <ImageUploader images={form.watch("images")} setImages={updateImages} maxImages={5} />
-                </div>
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="images"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="product-images">Product Images</FormLabel>
+                      <ImageUploader images={field.value} setImages={updateImages} maxImages={5} />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
                 <FormField
                   control={form.control}
                   name="name"
@@ -224,27 +239,73 @@ function DetailProductContent() {
                     </FormItem>
                   )}
                 />
-                <div className="space-y-2">
-                  <Label htmlFor="product-colorways">Product Colorways</Label>
-                  <ColorwayManager colorways={form.watch("colorways")} setColorways={updateColorways} />
+                <div className="flex">
+                  <div className="flex-1">
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Product Price</FormLabel>
+                          <FormControl>
+                            <div className="flex items-center">
+                              <span className="inline-block bg-muted px-2 py-1 text-muted-foreground rounded-l-md">$</span>
+                              <Input placeholder="00.00" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex-1 ml-4">
+                    <FormField
+                      control={form.control}
+                      name="quantity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Product Qty</FormLabel>
+                          <FormControl>
+                            <Input placeholder="0" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="product-description">Product Description</Label>
-                  <Editor
-                    content={product?.description || ""}
-                    onChange={(newValue) => {
-                      setValueEditor(newValue);
-                      form.setValue("description", newValue);
-                    }}
-                    placeholder="Write your post here..."
+                  <FormField
+                    control={form.control}
+                    name="colorways"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="product-colorways">Product Colorways</FormLabel>
+                        <ColorwayManager colorways={field.value} setColorways={updateColorways} />
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
+                </div>
+                <div className="space-y-2">
                   <FormField
                     control={form.control}
                     name="description"
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel htmlFor="product-description">Product Description</FormLabel>
                         <FormControl>
-                          <input type="hidden" {...field} value={valueEditor} />
+                          <div>
+                            <Editor
+                              content={product?.description || ""}
+                              onChange={(newValue) => {
+                                setValueEditor(newValue);
+                                form.setValue("description", newValue);
+                              }}
+                              placeholder="Write your post here..."
+                            />
+                            <input type="hidden" {...field} value={valueEditor} />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

@@ -23,6 +23,10 @@ const sidebarItems: SidebarItems = {
         icon: BoxesIcon,
         submenus: [
           {
+            href: "/admin/product/stock/detail",
+            label: "Add Product",
+          },
+          {
             href: "/admin/product/stock",
             label: "Product List",
           },

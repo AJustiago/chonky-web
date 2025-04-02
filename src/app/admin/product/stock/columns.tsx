@@ -84,9 +84,9 @@ export const ProductTable = () => {
       ),
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("price"));
-        const formatted = new Intl.NumberFormat("id-ID", {
+        const formatted = new Intl.NumberFormat("en-US", {
           style: "currency",
-          currency: "IDR",
+          currency: "USD",
         }).format(amount);
 
         return <div className="font-medium">{formatted}</div>;
