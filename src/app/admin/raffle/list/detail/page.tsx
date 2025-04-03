@@ -1,5 +1,7 @@
+"use client"
+
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "@/components/admin/adminLayout";
 import { getRaffleById, createRaffle, updateRaffle } from "@/services/raffleService";
 import { ArrowLeft, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }),
@@ -44,9 +47,17 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const RaffleDetailPage: React.FC = () => {
+export default function DetailRafflePage() {
+  return (
+    <AdminLayout>
+      <DetailRaffleContent />
+    </AdminLayout>
+  );
+}
+
+function DetailRaffleContent() {
+  const router = useRouter();
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const isNew = !id || id === "new";
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast()
@@ -87,7 +98,6 @@ const RaffleDetailPage: React.FC = () => {
         title: "Raffle created",
         description: "Your new raffle has been created successfully.",
       });
-      navigate("/raffle");
     },
     onError: () => {
       toast({
@@ -105,7 +115,6 @@ const RaffleDetailPage: React.FC = () => {
         title: "Raffle updated",
         description: "The raffle has been updated successfully.",
       });
-      navigate("/raffle");
     },
     onError: () => {
       toast({
@@ -148,22 +157,19 @@ const RaffleDetailPage: React.FC = () => {
 
   if (!isNew && isLoading) {
     return (
-      <AdminLayout>
         <div className="flex items-center justify-center h-full">
           <div className="h-16 w-16 rounded-full border-4 border-raffle-purple border-t-transparent animate-spin"></div>
         </div>
-      </AdminLayout>
     );
   }
 
   return (
-    <AdminLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <Button
+            onClick={() => router.push("/admin/raffle/list")}
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/raffle")}
             className="h-8 w-8"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -358,7 +364,7 @@ const RaffleDetailPage: React.FC = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate("/raffle")}
+                    onClick={() => router.push("/admin/raffle/list")}
                     className="mr-2"
                   >
                     Cancel
@@ -377,8 +383,5 @@ const RaffleDetailPage: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-    </AdminLayout>
   );
 };
-
-export default RaffleDetailPage;

@@ -4,7 +4,7 @@ import AdminLayout from "@/components/admin/adminLayout";
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import MyBreadcrumbs from "@/components/admin/breadcrumbs";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Product } from "@/types/product";
@@ -23,9 +23,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import ImageUploader from "@/components/admin/image-uploader";
-import ColorwayManager from "./colorway-uploader";
+import ColorwayManager from "@/components/admin/colorway-uploader";
 import DialogPreview from "./dialog-product";
 import { Eye } from "lucide-react";
 import Editor from "@/components/admin/editor";
@@ -53,6 +52,7 @@ export default function DetailProductPage() {
 
 function DetailProductContent() {
   const router = useRouter();
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const isNew = !id || id === "new";
@@ -123,14 +123,17 @@ function DetailProductContent() {
   const createMutation = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
-      toast.success("Product added successfully", {
+      toast({
+        title: "Product added successfully",
         description: "Product has been added to your inventory",
       });
-      // router.push("/admin/product/stock");
+      router.push("/admin/product/stock");
     },
     onError: () => {
-      toast.error("Failed to add Product", {
+      toast({
+        title:"Failed to add Product",
         description: "There was a problem adding product.",
+        variant: "destructive"
       });
     },
   });
@@ -138,14 +141,17 @@ function DetailProductContent() {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<FormValues> }) => updateProduct(id, data),
     onSuccess: () => {
-      toast.success("Product updated successfully", {
+      toast({
+        title: "Product updated successfully",
         description: "Product has been updated to your inventory",
       });
-      // router.push("/admin/product/stock");
+      router.push("/admin/product/stock");
     },
     onError: () => {
-      toast.error("Failed to update Product", {
-        description: "There was a problem updating the product.",
+      toast({
+        title:"Failed to update Product",
+        description: "There was a problem updating product.",
+        variant: "destructive"
       });
     },
   });

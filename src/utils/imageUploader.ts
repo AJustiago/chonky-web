@@ -1,35 +1,24 @@
 /**
- * Function to convert Base64 string to Blob and trigger download
+ * Function to save Base64 string via API to a specific path
  * @param base64String - The Base64 string of the image
  * @param fileName - The desired file name
- * @returns string - The relative path of the downloaded file
+ * @returns string - The relative path
  */
-export const Base64Image = (base64String: string, fileName: string): string => {
-    const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
-    const contentType = base64String.match(/^data:(image\/\w+);base64/)?.[1] || 'image/png';
+export const Base64Image = async (base64String: string, fileName: string): Promise<string> => {
+    try {
+        const response = await fetch('/api/save-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ base64String, fileName }),
+        });
 
-    const byteCharacters = atob(base64Data);
-    const byteNumbers = new Array(byteCharacters.length);
+        if (!response.ok) {
+            throw new Error('Failed to save image');
+        }
 
-    for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+        const data = await response.json();
+        return data.path;
+    } catch (e) {
+        throw new Error(`Error saving image: ${e}`);
     }
-
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: contentType });
-   
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    
-    link.download = fileName;
-
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-
-    
-    return `/products/${fileName}`;
 };
