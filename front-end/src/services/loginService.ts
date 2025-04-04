@@ -32,7 +32,7 @@ export function getToken(): string | null {
 export async function loginService(
   credentials: LoginCredentials
 ): Promise<LoginResponse> {
-  const response = await fetch("http://localhost:3100/auth/login", {
+  const response = await fetch("http://localhost:3100/admin", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
