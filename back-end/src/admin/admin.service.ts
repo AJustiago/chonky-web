@@ -21,7 +21,7 @@ export class AdminService {
     return this.prisma.admin.findMany();
   }
 
-  async findOneByEmail(email: string): Promise<Admin | null> {
-    return this.prisma.admin.findUnique({ where: { email } });
+  async findOneByUsername(username: string): Promise<Admin | null> {
+    return this.prisma.admin.findUnique({ where: { username } });
   }
 }

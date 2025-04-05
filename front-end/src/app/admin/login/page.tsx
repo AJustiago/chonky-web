@@ -21,7 +21,7 @@ const AdminLogin = () => {
 
       localStorage.setItem("token", access_token);
 
-      router.push("/dashboard");
+      router.push("/admin");
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }

@@ -20,7 +20,7 @@ export class AppService implements OnModuleInit {
       const hashedPassword = await bcrypt.hash('admin', 10);
       await this.prisma.admin.create({
         data: {
-          email: 'dummy@gmail.com',
+          username: 'admin',
           name: 'admin',
           password: hashedPassword,
         },

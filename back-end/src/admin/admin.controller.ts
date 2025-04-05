@@ -6,7 +6,7 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post()
-  async create(@Body() body: { email: string; name?: string; password: string }) {
+  async create(@Body() body: { username: string; name?: string; password: string }) {
     const admin = await this.adminService.create(body);
     const { password, ...result } = admin;
     return result;
@@ -16,8 +16,8 @@ export class AdminController {
     return this.adminService.findAll();
   }
 
-  @Get(':email')
-  async findOne(@Param('email') email: string) {
-    return this.adminService.findOneByEmail(email);
+  @Get(':username')
+  async findOne(@Param('username') username: string) {
+    return this.adminService.findOneByUsername(username);
   }
 }
