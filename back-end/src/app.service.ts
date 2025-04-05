@@ -30,4 +30,21 @@ export class AppService implements OnModuleInit {
       console.log('✅ Admin already exists, skipping seed');
     }
   }
+
+  async seedProduct() {
+    const existingProduct = await this.prisma.product.findFirst();
+    if (!existingProduct) {
+      await this.prisma.product.createMany({
+        data: [
+          { name: 'Product 1', price: 10, description: '<p>Description 1</p>', quantity: 10, onSale: false, },
+          { name: 'Product 2', price: 20, description: '<p>Description 2</p>', quantity: 10, onSale: false, },
+          { name: 'Product 3', price: 30, description: '<p>Description 3</p>', quantity: 10, onSale: false, },
+        ],
+      });
+      console.log('✅ Dummy products created');
+    } else {
+      console.log('✅ Products already exist, skipping seed');
+    }
+  }
+
 }
