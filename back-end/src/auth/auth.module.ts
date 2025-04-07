@@ -8,8 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [
     PrismaModule,
     JwtModule.register({
-      secret: 'supersecret', // ideally move to env var
-      signOptions: { expiresIn: '1d' },
+      secret: 'supersecret',
+      signOptions: { expiresIn: '2h' },
     }),
   ],
   controllers: [AuthController],

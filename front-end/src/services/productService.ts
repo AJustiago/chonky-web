@@ -1,114 +1,78 @@
 import { Product } from "@/types/product";
 import { Base64Image } from "@/utils/imageUploader";
 
-const mockProducts: Product[] = [
-    { 
-        id: "A001", 
-        name: "Apple Iphone", 
-        colorways: ["blue", "black", "purple"], 
-        description: "<p>this is an electronics device</p>", 
-        images: ["/AA.jpeg"], 
-        price: 50, 
-        quantity: 12,
-        onSale: true, 
-        functionEnabled: false 
-    },
-    { 
-        id: "A002", 
-        name: "Apple Watch", 
-        colorways: ["midnight", "sand", "sky"], 
-        description: "<p>this is an electronics device<p>", 
-        images: ["/AA.jpeg","/AA.jpeg","/AA.jpeg","/AA.jpeg"],
-        price: 500, 
-        quantity: 10, 
-        onSale: false, 
-        functionEnabled: false 
-    },
-    { 
-        id: "A003",
-        name: "Samsung S24", 
-        colorways: ["white", "ash", "dust"], 
-        description: "<p>this is an electronics device</p>", 
-        images: ["/AA.jpeg"], 
-        price: 5000, 
-        quantity: 1, 
-        onSale: true, 
-        functionEnabled: false },
-    { 
-        id: "A004",
-        name: "Oppo Reno X", 
-        colorways: ["grey", "red", "pink"], 
-        description: "<p>this is an electronics device</p>", 
-        images: ["/AA.jpeg"], 
-        price: 5, 
-        quantity: 9, 
-        onSale: false, 
-        functionEnabled: false 
-    },
-]
-
-let products = [...mockProducts];
+const apiUrl = 'http://localhost:3100/products';
 
 export const getProducts = async (): Promise<Product[]> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(products);
-        }, 500);
-    });
+  const res = await fetch(apiUrl, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to fetch products");
+  return res.json();
 };
 
-export const getProductsById = async (id: string): Promise<Product | undefined> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const product = products.find( r => r.id === id)
-            resolve(product);
-        }, 500);
-    });
+export const getProductsById = async (id: string): Promise<Product> => {
+  const res = await fetch(`${apiUrl}/${id}`, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to fetch product by ID");
+  return res.json();
 };
 
 export const createProduct = async (product: Omit<Product, 'id'>): Promise<Product> => {
+  const updatedImages = await Promise.all(
+    product.images.map(async (base64Image, idx) => {
+      const fileName = `${product.name.replace(/\s+/g, "_")}_${idx}.jpeg`;
+      return await Base64Image(base64Image, fileName);
+    })
+  );
 
-    const updatedImages = await Promise.all(
-        product.images.map(async (base64Image, idx) => {
-            const fileName = `${product.name.replace(/\s+/g, "_")}_${idx}.jpeg`;
-            const imagePath = await Base64Image(base64Image, fileName);
-            return imagePath;
-        })
-    );
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...product,
+      images: updatedImages,
+    }),
+  });
 
-    const newProduct = {
-        ...product,
-        images: updatedImages,
-        id: Date.now().toString(),
-    };
-    products = [...products, newProduct];
-    return newProduct;
+  if (!response.ok) throw new Error("Failed to create product");
+  return response.json();
 };
-    
-export const updateProduct = async (id: string, product: Partial<Product>): Promise<Product | undefined> => {
-    let updatedImages: string[] | undefined;
 
-    if (product.images && product.images.some(image => typeof image === 'string' && !image.startsWith('/'))) {
-        updatedImages = await Promise.all(
-            product.images.map(async (base64Image, idx) => {
-                const fileName = `${product.name?.replace(/\s+/g, "_") || "product"}_${idx}.jpeg`;
-                const imagePath = await Base64Image(base64Image, fileName);
-                return imagePath;
-            })
-        );
-    }
+export const updateProduct = async (
+  id: string,
+  product: Partial<Product>
+): Promise<Product> => {
+  let updatedImages: string[] | undefined;
 
-    products = products.map((r) =>
-        r.id === id ? { ...r, ...product, ...(updatedImages && { images: updatedImages }) } : r
+  if (product.images && product.images.some((img) => !img.startsWith("/"))) {
+    updatedImages = await Promise.all(
+      product.images.map(async (base64Image, idx) => {
+        const fileName = `${product.name?.replace(/\s+/g, "_") || "product"}_${idx}.jpeg`;
+        return await Base64Image(base64Image, fileName);
+      })
     );
-    return products.find((r) => r.id === id);
+  }
+
+  const response = await fetch(`${apiUrl}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...product,
+      ...(updatedImages && { images: updatedImages }),
+    }),
+  });
+
+  if (!response.ok) throw new Error("Failed to update product");
+  return response.json();
 };
 
 export const deleteProduct = async (id: string): Promise<boolean> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-        products = products.filter(r => r.id !== id);
-        resolve(true);
-        }, 500);
-    });
+  const response = await fetch(`${apiUrl}/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) throw new Error("Failed to delete product");
+  return true;
 };

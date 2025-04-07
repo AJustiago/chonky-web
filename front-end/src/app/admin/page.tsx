@@ -1,21 +1,14 @@
 "use client";
 import AdminLayout from "@/components/admin/adminLayout";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { getToken } from "@/services/loginService";
+import { useAuth } from "@/hooks/use-auth";
 
 const AdminPage = () => {
-  const [token, setToken] = useState<string | null>(null);
-  const router = useRouter();
+  const token = useAuth();
 
-  useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      router.push("/admin/login");
-    } else {
-      setToken(token);
-    }
-  }, []);
+  if (!token) {
+    return null;
+  }
+
 
   return (
     <AdminLayout>

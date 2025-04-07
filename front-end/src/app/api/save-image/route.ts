@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(base64Data, 'base64');
 
-    const savePath = path.join('D:/Alex/Github/chonky-web/public/products', fileName);
+    const savePath = path.join('D:/Alex/Github/chonky-web/front-end/public/products', fileName);
     const dir = path.dirname(savePath);
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
