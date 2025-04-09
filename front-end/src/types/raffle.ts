@@ -2,16 +2,23 @@
 export interface Raffle {
     id: string;
     title: string;
+    images: string[];
     description: string;
-    prizeName: string;
-    prizeValue: number;
     startDate: string;
     endDate: string;
-    numberOfWinners: number;
     status: 'ongoing' | 'finished' | 'upcoming';
-    participants?: number;
-    maxParticipants?: number;
-    imageUrl?: string;
+    product: RaffleProduct[];
+  }
+
+  export interface RaffleProduct {
+    id: string;
+    name: string;
+    images: string[];
+    variant: string;
+    colorways: string[];
+    description: string;
+    price: number;
+    quantity: number;
   }
   
   export interface RaffleParticipant {

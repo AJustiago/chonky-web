@@ -48,19 +48,13 @@ const RaffleCard: React.FC<RaffleCardProps> = ({ raffle }) => {
     }
   };
 
-  // Calculate percentage of participation
-  const participationPercentage = 
-    raffle.participants && raffle.maxParticipants
-      ? Math.min(100, Math.round((raffle.participants / raffle.maxParticipants) * 100))
-      : 0;
-
   return (
     <Link href={`/admin/raffle/list/detail?id=${raffle.id}`}>
       <Card className="h-full overflow-hidden transition-all hover:shadow-md">
-        {raffle.imageUrl && (
+        {raffle.images && (
           <div className="relative h-40 overflow-hidden">
             <img
-              src={raffle.imageUrl}
+              src={raffle.images[0]}
               alt={raffle.title}
               className="w-full h-full object-cover"
             />
@@ -79,48 +73,13 @@ const RaffleCard: React.FC<RaffleCardProps> = ({ raffle }) => {
           </p>
           <div className="space-y-2">
             <div className="flex items-center text-sm text-gray-500">
-              <Award className="w-4 h-4 mr-2 text-raffle-purple" />
-              <span>{raffle.prizeName}</span>
-            </div>
-            <div className="flex items-center text-sm text-gray-500">
               <Calendar className="w-4 h-4 mr-2 text-raffle-purple" />
               <span>
                 {formatDate(raffle.startDate)} - {formatDate(raffle.endDate)}
               </span>
             </div>
-            {raffle.participants !== undefined && (
-              <div className="space-y-1">
-                <div className="flex items-center text-sm text-gray-500 justify-between">
-                  <div className="flex items-center">
-                    <Users className="w-4 h-4 mr-2 text-raffle-purple" />
-                    <span>{raffle.participants} participants</span>
-                  </div>
-                  {raffle.maxParticipants && (
-                    <span className="text-xs text-gray-500">
-                      {participationPercentage}% filled
-                    </span>
-                  )}
-                </div>
-                {raffle.maxParticipants && (
-                  <Progress 
-                    value={participationPercentage} 
-                    className="h-2 bg-gray-100" 
-                  />
-                )}
-              </div>
-            )}
           </div>
         </CardContent>
-        <CardFooter className="bg-gray-50 px-5 py-3">
-          <div className="flex justify-between items-center w-full">
-            <span className="text-sm font-medium">
-              {raffle.numberOfWinners} winner{raffle.numberOfWinners > 1 ? "s" : ""}
-            </span>
-            <span className="text-sm font-semibold text-raffle-purple">
-              ${raffle.prizeValue.toLocaleString()}
-            </span>
-          </div>
-        </CardFooter>
       </Card>
     </Link>
   );

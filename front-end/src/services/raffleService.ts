@@ -1,94 +1,134 @@
 import { Raffle, RaffleParticipant } from "@/types/raffle";
 
-// Mock data for demonstration
 const mockRaffles: Raffle[] = [
   {
     id: "1",
     title: "Summer Tech Giveaway",
     description: "Win the latest gadgets in our summer raffle!",
-    prizeName: "MacBook Pro",
-    prizeValue: 1999.99,
     startDate: "2023-06-01T00:00:00.000Z",
     endDate: "2023-08-31T23:59:59.999Z",
-    numberOfWinners: 1,
     status: "ongoing",
-    participants: 342,
-    maxParticipants: 500,
-    imageUrl: "/placeholder.svg"
+    images: ["/placeholder.svg"],
+    product: [
+      {
+        id: "p1",
+        name: "Smart Gadget Bundle",
+        images: ["/placeholder.svg"],
+        variant: "Bundle",
+        colorways: ["Black", "White"],
+        description: "Includes smart watch, wireless earbuds, and a portable charger.",
+        price: 299.99,
+        quantity: 10,
+      }
+    ]
   },
   {
     id: "2",
     title: "Gaming Console Extravaganza",
     description: "Try your luck to win gaming consoles and accessories!",
-    prizeName: "PlayStation 5",
-    prizeValue: 499.99,
     startDate: "2023-07-15T00:00:00.000Z",
     endDate: "2023-09-15T23:59:59.999Z",
-    numberOfWinners: 2,
     status: "ongoing",
-    participants: 567,
-    maxParticipants: 1000,
-    imageUrl: "/placeholder.svg"
+    images: ["/placeholder.svg"],
+    product: [
+      {
+        id: "p2",
+        name: "PlayStation 5",
+        images: ["/placeholder.svg"],
+        variant: "Disc Edition",
+        colorways: ["White"],
+        description: "Experience next-gen gaming with the PlayStation 5.",
+        price: 499.99,
+        quantity: 2,
+      }
+    ]
   },
   {
     id: "3",
     title: "Smartphone Bonanza",
     description: "Win the latest smartphones in our tech raffle!",
-    prizeName: "iPhone 14 Pro",
-    prizeValue: 999.99,
     startDate: "2023-05-01T00:00:00.000Z",
     endDate: "2023-07-01T23:59:59.999Z",
-    numberOfWinners: 3,
     status: "finished",
-    participants: 879,
-    maxParticipants: 1000,
-    imageUrl: "/placeholder.svg"
+    images: ["/placeholder.svg"],
+    product: [
+      {
+        id: "p3",
+        name: "iPhone 14 Pro",
+        images: ["/placeholder.svg"],
+        variant: "128GB",
+        colorways: ["Space Black", "Silver"],
+        description: "Latest Apple flagship with amazing performance.",
+        price: 999.99,
+        quantity: 3,
+      }
+    ]
   },
   {
     id: "4",
     title: "Home Entertainment Package",
     description: "Win a complete home entertainment setup!",
-    prizeName: "85\" 4K OLED TV + Soundbar",
-    prizeValue: 3499.99,
     startDate: "2023-04-15T00:00:00.000Z",
     endDate: "2023-06-15T23:59:59.999Z",
-    numberOfWinners: 1,
     status: "finished",
-    participants: 423,
-    maxParticipants: 500,
-    imageUrl: "/placeholder.svg"
+    images: ["/placeholder.svg"],
+    product: [
+      {
+        id: "p4",
+        name: "85\" 4K OLED TV + Soundbar",
+        images: ["/placeholder.svg"],
+        variant: "Home Setup",
+        colorways: ["Black"],
+        description: "An immersive home theater experience.",
+        price: 3499.99,
+        quantity: 1,
+      }
+    ]
   },
   {
     id: "5",
     title: "Holiday Travel Sweepstakes",
     description: "Win a dream vacation to any destination of your choice!",
-    prizeName: "All-Expenses Paid Trip for Two",
-    prizeValue: 5000.00,
     startDate: "2023-11-01T00:00:00.000Z",
     endDate: "2023-12-25T23:59:59.999Z",
-    numberOfWinners: 1,
     status: "upcoming",
-    participants: 0,
-    maxParticipants: 2000,
-    imageUrl: "/placeholder.svg"
+    images: ["/placeholder.svg"],
+    product: [
+      {
+        id: "p5",
+        name: "All-Expenses Paid Trip for Two",
+        images: ["/placeholder.svg"],
+        variant: "Luxury",
+        colorways: ["N/A"],
+        description: "Choose your dream destination and we’ll handle the rest.",
+        price: 5000.00,
+        quantity: 1,
+      }
+    ]
   },
   {
     id: "6",
     title: "Next-Gen VR Experience",
     description: "Be among the first to try the latest virtual reality technology!",
-    prizeName: "Meta Quest 3 Pro",
-    prizeValue: 799.99,
     startDate: "2023-10-15T00:00:00.000Z",
     endDate: "2023-11-30T23:59:59.999Z",
-    numberOfWinners: 3,
     status: "upcoming",
-    participants: 0,
-    maxParticipants: 750,
-    imageUrl: "/placeholder.svg"
+    images: ["/placeholder.svg"],
+    product: [
+      {
+        id: "p6",
+        name: "Meta Quest 3 Pro",
+        images: ["/placeholder.svg"],
+        variant: "256GB",
+        colorways: ["Black", "Grey"],
+        description: "Cutting-edge virtual reality experience.",
+        price: 799.99,
+        quantity: 3,
+      }
+    ]
   }
 ];
 
-// Mock participants data
 const mockParticipants: RaffleParticipant[] = [
   {
     id: "p1",
